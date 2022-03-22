@@ -1,0 +1,16 @@
+.nav-container{
+    background-color: 	#808080;
+}
+
+.coursetable{
+    text-align : center;
+    width : 50%;
+    position: center;
+    height : 22%;
+    font-size : 22px;
+    background-color: #ff9999;
+    border-radius: 23px;
+    padding-top : 6px;
+    margin-left: auto;
+    margin-right: auto;
+}

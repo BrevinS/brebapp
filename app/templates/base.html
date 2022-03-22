@@ -5,8 +5,17 @@
         </title>
     </head>
 <body>
-    <div>
-        Where am I
+    <div class="nav-container">
+        <table>
+            <div>
+                <a class="navbar-brand" href="{{url_for('index')}}">Homepage</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="{{ url_for('index') }}" class="button">Home</a></li>
+                <li><a href="{{ url_for('register') }}" class="button">Create Account</a></li>
+            </ul>
+
+        </table>
     </div>
 </body>
 

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Account Registration</h1>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <!--Username-->
+        <p>
+            {{ form.username.label }}<br>
+            {{ form.username(class = 'textinput') }}<br>
+
+            {% for error in form.username.errors %}
+            <span style="color:navy;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <!--Password1-->
+        <p>
+            {{ form.password1.label }}<br>
+            {{ form.password1(class = 'textinput') }}<br>
+
+            {% for error in form.password1.errors %}
+            <span style="color:navy;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <!--Password2-->
+        <p>
+            {{ form.password2.label }}<br>
+            {{ form.password2(class = 'textinput') }}<br>
+
+            {% for error in form.password2.errors %}
+            <span style="color:navy;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+         <!--Name-->
+         <p>
+            {{ form.firstname.label }}<br>
+            {{ form.firstname(class = 'textinput') }}<br>
+
+            {% for error in form.firstname.errors %}
+            <span style="color:navy;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <!--LastName-->
+        <p>
+            {{ form.lastname.label }}<br>
+            {{ form.lastname(class = 'textinput') }}<br>
+
+            {% for error in form.lastname.errors %}
+            <span style="color:navy;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+         <!--Email-->
+         <p>
+            {{ form.email.label }}<br>
+            {{ form.email(class = 'textinput') }}<br>
+
+            {% for error in form.email.errors %}
+            <span style="color:navy;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.submit(class="button") }}
+        </p>
+    </form>
+
+{% endblock %}
