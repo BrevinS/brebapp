@@ -23,8 +23,7 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         acc = User(username=form.username.data, email=form.email.data, firstname=form.firstname.data,
-            lastname=form.lastname.data, wsuid=form.wsuid.data, phone=form.phone.data, 
-            c_gpa=form.c_gpa.data, grad_date=form.grad_date.data)
+            lastname=form.lastname.data, phone=form.phone.data)
         acc.get_password(form.password2.data)
         db.session.add(acc)
         db.session.commit()
