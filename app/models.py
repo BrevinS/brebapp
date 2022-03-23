@@ -13,7 +13,6 @@ class User(UserMixin, db.Model):
     firstname = db.Column(db.String(64))
     lastname = db.Column(db.String(64))
     email = db.Column(db.String(120), index=True, unique=True)
-    phone = db.Column(db.String(10), unique=True)
 
     def get_password(self, password):
         self.password_hash = generate_password_hash(password)
