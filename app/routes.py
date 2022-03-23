@@ -12,18 +12,7 @@ def initDB(*args, **kwargs):
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET'])
 def index():
-    form = RegisterForm()
-    if form.validate_on_submit():
-        acc = User(username=form.username.data, email=form.email.data, firstname=form.firstname.data,
-            lastname=form.lastname.data)
-        acc.get_password(form.password2.data)
-        db.session.add(acc)
-        db.session.commit()
-        flash('Congrats you have created an account!')
-        ##REDIRECT AFTER STUDENT REGISTERS THEY NEED TO SEE COURSES && APPLY
-        ##I need to add new page
-        return redirect(url_for('index'))
-    return render_template('user_registration.html', form=form)
+    return render_template('base.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -38,4 +27,4 @@ def register():
         ##REDIRECT AFTER STUDENT REGISTERS THEY NEED TO SEE COURSES && APPLY
         ##I need to add new page
         return redirect(url_for('index'))
-    return render_template('user_registration.html', title='Register', form=form)
+    return render_template('user_registration.html', form=form)
