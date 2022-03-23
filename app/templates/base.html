@@ -1,8 +1,7 @@
 <html>
     <head>
-        <title>
-            brevai
-        </title>
+        <title> brevai </title>
+        <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
     </head>
 <body>
     <div class="nav-container">
@@ -10,10 +9,10 @@
             <div>
                 <a class="navbar-brand" href="{{url_for('index')}}">Homepage</a>
             </div>
-            <ul class="nav navbar-nav">
-                <li><a href="{{ url_for('index') }}" class="button">Home</a></li>
-                <li><a href="{{ url_for('register') }}" class="button">Create Account</a></li>
-            </ul>
+            <table class="nav navbar-nav">
+                <td><a href="{{ url_for('index') }}" class="button">Home</a></td>
+                <td><a href="{{ url_for('register') }}" class="button">Create Account</a></td>
+            </table>
 
         </table>
     </div>
