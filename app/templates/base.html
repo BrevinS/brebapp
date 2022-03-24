@@ -12,10 +12,17 @@
             <table class="nav navbar-nav">
                 <td><a href="{{ url_for('index') }}" class="button">Home</a></td>
                 <td><a href="{{ url_for('register') }}" class="button">Create Account</a></td>
+                {% if current_user.is_anonymous %}
+                    <td><a href="{{ url_for('login') }}" class = "button"> Login </a></td>
+                {% else %}
+                    <td><a href="{{ url_for('logout') }}" class = "button"> Logout </a></td>
+                    <td class="white">Logged in as {{ current_user.firstname }} {{ current_user.lastname }} </td>
+                {% endif %}    
             </table>
 
         </table>
     </div>
+    {% block content %} {% endblock %}
 </body>
 
 </html>
