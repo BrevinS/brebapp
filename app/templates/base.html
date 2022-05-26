@@ -13,15 +13,22 @@
                 <td><a href="{{ url_for('index') }}" class="button">Home</a></td>
                 <td><a href="{{ url_for('register') }}" class="button">Create Account</a></td>
                 {% if current_user.is_anonymous %}
-                    <td><a href="{{ url_for('login') }}" class = "button"> Login </a></td>
+                    <li><a href="{{ url_for('login') }}" class = "button"> Login </a></li>
                 {% else %}
-                    <td><a href="{{ url_for('logout') }}" class = "button"> Logout </a></td>
-                    <td class="white">Logged in as {{ current_user.firstname }} {{ current_user.lastname }} </td>
+                    <li><a href="{{ url_for('logout') }}" class = "button"> Logout </a></li>
+                    <li class="white">Logged in as {{ current_user.firstname }} {{ current_user.lastname }} </li>
                 {% endif %}    
             </table>
 
         </table>
     </div>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+          {% for message in messages %}
+          <div class="flash-container">{{ message }}</div>
+          {% endfor %}
+      {% endif %}
+      {% endwith %}
     {% block content %} {% endblock %}
 </body>
 
