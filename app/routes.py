@@ -47,3 +47,8 @@ def login():
         login_user(student, remember=form.rememberme.data)
         return redirect(url_for('index'))
     return render_template('login.html', title='Login Page', form=form)
+
+@app.route('/aboutme', methods=['GET', 'POST'])
+def aboutme():
+    return render_template('about.html')
+

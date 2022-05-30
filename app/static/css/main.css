@@ -2,19 +2,6 @@
     background-color: 	#808080;
 }
 
-.coursetable{
-    text-align : center;
-    width : 50%;
-    position: center;
-    height : 22%;
-    font-size : 22px;
-    background-color: #ff9999;
-    border-radius: 23px;
-    padding-top : 6px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
 .flash-container {
     background:#0bce07;
 	font-family: Tahoma;
@@ -35,4 +22,12 @@
     background-color: #333;
     overflow: hidden;
 }
+
+table {
+    border-collapse: separate;
+    border-spacing: 20px;
+}
+
+
+
 
