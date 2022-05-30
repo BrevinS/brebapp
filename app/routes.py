@@ -23,6 +23,7 @@ def register():
         acc.get_password(form.password2.data)
         db.session.add(acc)
         db.session.commit()
+        login_user(acc)
         flash('Congrats you have registered')
         return redirect(url_for('index'))
     return render_template('user_registration.html', form=form)

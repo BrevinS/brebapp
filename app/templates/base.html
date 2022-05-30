@@ -2,34 +2,43 @@
     <head>
         <title> brevai </title>
         <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     </head>
-<body>
-    <div class="nav-container">
-        <table>
-            <div>
-                <a class="navbar-brand" href="{{url_for('index')}}">Homepage</a>
+    <body>
+        <div class="nav-container">
+            <div class="navbar navbar-inverse">
+                <div class="container-fluid">
+                    <table>
+                        <div>
+                            <td><a class="navbar-brand" href="{{url_for('index')}}">Homepage</a></td>
+                        </div>
+                        <div class="topnav">
+                            <td><a href="{{ url_for('index') }}" class="button navbar-brand">Home</a></td>
+                            <td><a href="{{ url_for('register') }}" class="button navbar-brand">Create Account</a></td>
+                            {% if current_user.is_anonymous %}
+                                <td><a href="{{ url_for('login') }}" class="button navbar-brand">Login</a></td>
+                            {% else %}
+                                <td><a href="{{ url_for('logout') }}" class="button navbar-brand">Logout</a></td>
+                                <div class="topnav-right white">
+                                    Logged in as {{ current_user.firstname }} {{ current_user.lastname }}
+                                </div>
+                            {% endif %}    
+                        </div>
+                    </table>
+                </div>
             </div>
-            <table class="nav navbar-nav">
-                <td><a href="{{ url_for('index') }}" class="button">Home</a></td>
-                <td><a href="{{ url_for('register') }}" class="button">Create Account</a></td>
-                {% if current_user.is_anonymous %}
-                    <li><a href="{{ url_for('login') }}" class = "button"> Login </a></li>
-                {% else %}
-                    <li><a href="{{ url_for('logout') }}" class = "button"> Logout </a></li>
-                    <li class="white">Logged in as {{ current_user.firstname }} {{ current_user.lastname }} </li>
-                {% endif %}    
-            </table>
-
-        </table>
-    </div>
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-          {% for message in messages %}
-          <div class="flash-container">{{ message }}</div>
-          {% endfor %}
-      {% endif %}
-      {% endwith %}
-    {% block content %} {% endblock %}
-</body>
-
+        </div>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+            <div class="flash-container">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+        {% block content %} {% endblock %}
+    </body>
 </html>
