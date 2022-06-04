@@ -1,56 +1,48 @@
 <html>
     <head>
         <title> brevai </title>
-        <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     </head>
     <body>
-        <div class="nav-container">
-            <div class="navbar navbar-inverse">
-                <div class="container-fluid">
-                    <table>
-                        <div>
-                            <td><a class="button navbar-brand" href="{{url_for('aboutme')}}">About Me</a></td>
-                        </div>
-                        <div class="topnav">
-                            <td><a href="{{ url_for('index') }}" class="button navbar-brand">Home</a></td>
-                            <td><a href="{{ url_for('register') }}" class="button navbar-brand">Create Account</a></td>
-                        </div>
-                            {% if current_user.is_anonymous %}
-                                <td><a href="{{ url_for('login') }}" class="button navbar-brand">Login</a></td>
-                            {% else %}
-                                <td><a href="{{ url_for('logout') }}" class="button navbar-brand">Logout</a></td>
-                                <div class="topnav-right white">
-                                    Logged in as {{ current_user.firstname }} {{ current_user.lastname }}
-                                </div>
-                            {% endif %}    
-                            <!--MEDIA ICONS-->
-                            
-                                <!-- GitHub -->
-                                <td
-                                    class="btn btn-primary btn-lg btn-floating"
-                                    style="background-color: grey; padding-top: 10px;"
-                                    href="https://github.com/BrevinS"
-                                    role="button"
-                                    ><i class="bi bi-github"></i>
-                                </td>
-                                <!-- LinkedIn -->
-                                <td
-                                    class="btn btn-primary btn-lg btn-floating"
-                                    style="background-color: grey; padding-top: 10px;"
-                                    href="https://www.linkedin.com/in/brevin-simon-a197ba206/"
-                                    role="button"
-                                    ><i class="bi bi-linkedin"></i>
-                                </td>
-                            
-                    </table>
-                </div>
-            </div>
+        <div class="navbar navbar-inverse">
+            <a class="button navbar-brand" href="{{url_for('aboutme')}}">About Me</a>
+            <a href="{{ url_for('index') }}" class="button navbar-brand">Home</a>
+            <a href="{{ url_for('register') }}" class="button navbar-brand">Create Account</a>
+            {% if current_user.is_anonymous %}
+                <a href="{{ url_for('login') }}" class="button navbar-brand">Login</a>
+            {% else %}
+                <a href="{{ url_for('logout') }}" class="button navbar-brand">Logout</a>
+                <i class="navbar-brand white">
+                    Logged in as {{ current_user.firstname }} {{ current_user.lastname }}
+                </i>
+            {% endif %}    
+            <!--MEDIA ICONS-->
+            <!-- GitHub -->
+            <a
+                style="float:right;"
+                class="navbar-brand btn btn-primary btn-lg btn-floating"
+                style="background-color: grey; padding-top: 10px;"
+                href="https://github.com/BrevinS"
+                target="_blank"
+                role="button"
+                ><i class="bi bi-github"></i>
+            </a>
+            <!-- LinkedIn -->
+            <a
+                style="float:right;"
+                class="navbar-brand btn btn-primary btn-lg btn-floating"
+                style="background-color: grey; padding-top: 10px;"
+                href="https://www.linkedin.com/in/brevin-simon-a197ba206/"
+                target="_blank"
+                role="button"
+                ><i class="bi bi-linkedin"></i>
+            </a> 
         </div>
         {% with messages = get_flashed_messages() %}
         {% if messages %}

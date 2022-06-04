@@ -1,9 +1,24 @@
-.nav-container{
-    background-color: 	#808080;
+.navbar a:hover {
+    background: #ddd;
+    color: black;
+}
+
+.navbar-inverse {
+    position:fixed;
+    top:0;
+    color: white;
+    background-color: black;
+    width:100%;
+    left:0;
+}
+
+.navbar b:hover {
+    background: red;
+    color: black;
 }
 
 .flash-container {
-    background:#0bce07;
+    background:#2cc02a;
 	font-family: Tahoma;
 	font-size: 24px;
     padding: 30px;
@@ -18,12 +33,13 @@
     float: right;
 }
 
-.topnav {
-    background-color: #333;
-    overflow: hidden;
+.topnav-middle {
+    float: middle;
 }
 
-table {
-    border-collapse: separate;
-    border-spacing: 20px;
+.main {
+    padding: 16px;
+    margin-top: 30px;
 }
+
+body {margin:0;}
