@@ -1,14 +1,43 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Upload a file (.csv)</h1>
-    <form method=post enctype=multipart/form-data>
-        <input type=file name=file>
-        <input type="submit" value=Upload>
-    </form>
-    Shape is: {{ shape }}
+    <style>
+    .content {
+      max-width: 500px;
+      margin: auto;
+    }
+    </style>
+    <body>
+        <div class="content">
+            <h1>Upload a file (.csv)</h1>
+            <form method=post enctype=multipart/form-data>
+                <input type=file name=file style="text-align: right;">
+                <input type="submit" value=Upload>
+            </form>
+
+            Shape is: {{ shape }}
+            <br>
+
+            <br>
+
+            ID's and Features
+            <br>
+
+            {% for column in titles %}
+                {{ column }}
+                <form method="post">
+                    <input type="submit" value="Apply">
+                </form>
+            {% endfor %}
+        </div>
+    </body>
+    <div id="" style="overflow:scroll; height:400px;">
+        {% for table in tables %}
+            {{ titles[loop.index] }}
+            {{ table|safe }}
+        {% endfor %}
+    </div>
     
-
-
-
+    
+        
 {% endblock %}
