@@ -32,7 +32,7 @@
             Dataframe Columns (Identify one "Identifier" column and any number of "Feature" columns)
             <br>
             
-            <div class="scrollfeat" id="" style="overflow:scroll; height:400px;">
+            <div class="scrollfeat" id="" style="overflow:scroll; height:400px; outline-style: solid; outline-color: black;">
                 {% for column in columns %}
                     <div class="column">
                         {% include '_features.html' %}
@@ -44,7 +44,7 @@
             <button onclick="toggle_display()">View Dataset</button>
             {% endif %}
         </div>
-        <div class="content_section" id="" style="overflow:scroll; height:400px;">
+        <div class="content_section content" id="" style="overflow:scroll; height:400px;">
             {% for table in tables %}
                 {{ columns[loop.index] }}
                 {{ table|safe }}
