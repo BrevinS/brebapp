@@ -3,6 +3,35 @@
     color: black;
 }
 
+.datahome {
+    text-align : center;
+    width : 50%;
+    position: center;
+    height : 22%;
+    font-size : 22px;
+    background-color: #ff9999;
+    border-radius: 23px;
+    padding-top : 6px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.myBox {
+    border: none;
+    padding: 5px;
+    font: 24px/36px sans-serif;
+    width: 200px;
+    height: 200px;
+    overflow: scroll;
+}
+
+.center {
+    margin: auto;
+    width: 50%;
+    border: 3px solid green;
+    padding: 10px;
+  }
+
 .navbar-inverse {
     position:fixed;
     top:0;
@@ -42,4 +71,3 @@
     margin-top: 30px;
 }
 
-body {margin:0;}

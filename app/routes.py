@@ -68,7 +68,8 @@ def homepage():
         if data and allowed_file(data.filename):
             df = pd.read_csv(request.files.get('file'))
             # Give HTML shape for example
-            return render_template('homepage.html', shape=df.shape)
+            return render_template('homepage.html', shape=df.shape, 
+                tables=[df.to_html(classes='data', header="true")], titles=df.columns.values)
         else:
             flash('FILE MUST BE OF TYPE .csv')
     return render_template('homepage.html')
