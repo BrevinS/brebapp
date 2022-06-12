@@ -1,6 +1,17 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <script>
+    function toggle_display(){
+        el = document.querySelector('.content_section');
+    
+        if(el.style.visibility == 'hidden'){
+            el.style.visibility = 'visible'
+        }else{
+            el.style.visibility = 'hidden'
+        }
+    }
+    </script>
     <style>
     .content {
       max-width: 500px;
@@ -18,8 +29,6 @@
             Shape is: {{ shape }}
             <br>
 
-            <br>
-
             ID's and Features
             <br>
 
@@ -29,15 +38,17 @@
                     <input type="submit" value="Apply">
                 </form>
             {% endfor %}
+            {% if shape %}
+            <button onclick="toggle_display()">View Dataset</button>
+            {% endif %}
+            <div class="content_section" id="" style="overflow:scroll; height:400px;">
+                {% for table in tables %}
+                    {{ titles[loop.index] }}
+                    {{ table|safe }}
+                {% endfor %}
+            </div>
         </div>
     </body>
-    <div id="" style="overflow:scroll; height:400px;">
-        {% for table in tables %}
-            {{ titles[loop.index] }}
-            {{ table|safe }}
-        {% endfor %}
-    </div>
-    
-    
+  
         
 {% endblock %}
