@@ -4,6 +4,7 @@ from flask_sqlalchemy import sqlalchemy
 from app.forms import RegisterForm, LoginForm
 from app.models import User
 from flask_login import current_user, login_user, logout_user, login_required
+import pandas as pd
 
 @app.before_first_request
 def initDB(*args, **kwargs):
@@ -51,4 +52,24 @@ def login():
 @app.route('/aboutme', methods=['GET', 'POST'])
 def aboutme():
     return render_template('about.html')
+
+EXTENSION_ALLOWED = set(['csv'])
+
+# https://www.middlewareinventory.com/blog/flask-app-upload-file-save-filesystem/
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in EXTENSION_ALLOWED
+
+# Actual cool stuff going on now
+@app.route('/homepage', methods=['GET', 'POST'])
+def homepage():
+    if request.method == 'POST':
+        data = request.files['file']
+        if data and allowed_file(data.filename):
+            df = pd.read_csv(request.files.get('file'))
+            # Give HTML shape for example
+            return render_template('homepage.html', shape=df.shape)
+        else:
+            flash('FILE MUST BE OF TYPE .csv')
+    return render_template('homepage.html')
 
