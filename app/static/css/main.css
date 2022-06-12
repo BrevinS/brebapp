@@ -16,6 +16,15 @@
     margin-right: auto;
 }
 
+.scrollfeat {
+    outline-style: solid;
+    outline-color: black;
+}
+
+.featable {
+    background-color: bisque;
+}
+
 .myBox {
     border: none;
     padding: 5px;

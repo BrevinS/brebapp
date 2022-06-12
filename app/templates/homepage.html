@@ -14,7 +14,7 @@
     </script>
     <style>
     .content {
-      max-width: 500px;
+      max-width: 800px;
       margin: auto;
     }
     </style>
@@ -29,24 +29,26 @@
             Shape is: {{ shape }}
             <br>
 
-            ID's and Features
+            Dataframe Columns (Identify one "Identifier" column and any number of "Feature" columns)
             <br>
-
-            {% for column in titles %}
-                {{ column }}
-                <form method="post">
-                    <input type="submit" value="Apply">
-                </form>
-            {% endfor %}
+            
+            <div class="scrollfeat" id="" style="overflow:scroll; height:400px;">
+                {% for column in columns %}
+                    <div class="column">
+                        {% include '_features.html' %}
+                    </div>
+                {% endfor %}
+            </div>
+            
             {% if shape %}
             <button onclick="toggle_display()">View Dataset</button>
             {% endif %}
-            <div class="content_section" id="" style="overflow:scroll; height:400px;">
-                {% for table in tables %}
-                    {{ titles[loop.index] }}
-                    {{ table|safe }}
-                {% endfor %}
-            </div>
+        </div>
+        <div class="content_section" id="" style="overflow:scroll; height:400px;">
+            {% for table in tables %}
+                {{ columns[loop.index] }}
+                {{ table|safe }}
+            {% endfor %}
         </div>
     </body>
   
