@@ -19,6 +19,8 @@
 .scrollfeat {
     outline-style: solid;
     outline-color: black;
+    overflow:scroll; 
+    height:400px;
 }
 
 .featable {
