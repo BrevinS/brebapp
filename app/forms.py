@@ -28,3 +28,4 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     rememberme = BooleanField('Remember Me')
     submit = SubmitField('Sign In')
+

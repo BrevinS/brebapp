@@ -6,6 +6,12 @@ from flask_login import UserMixin, current_user
 def load_user(id):
     return User.query.get(int(id))
 
+#Relationships
+coltags = db.Table('coltags',
+    db.Column('df_id', db.Integer, db.ForeignKey('dataframe.id')),
+    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'))
+    )
+
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(32), unique=True)
@@ -19,3 +25,25 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+class Dataframe(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    identifier = db.Column(db.String(100), unique=False)
+    features = db.Column(db.String(2000), unique=False)
+
+    tags = db.relationship('Tag', secondary=coltags,
+                            primaryjoin=(coltags.c.df_id == id),
+                            backref=db.backref('coltags', lazy='dynamic'), lazy='dynamic')
+
+class Tag(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(20))
+    
+    courses = db.relationship('Dataframe', secondary=coltags,
+                               primaryjoin=(coltags.c.tag_id == id),
+                               backref=db.backref('coltags', lazy='dynamic'),
+                               lazy='dynamic')
+
+
+
+
