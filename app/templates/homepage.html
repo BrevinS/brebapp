@@ -26,31 +26,34 @@
                 <input type="submit" value=Upload>
             </form>
 
-            Shape is: {{ shape }}
-            <br>
-
             Dataframe Columns (Identify one "Identifier" column and any number of "Feature" columns)
             <br>
             
-            <div class="scrollfeat" id="" style="overflow:scroll; height:400px; outline-style: solid; outline-color: black;">
-                {% for column in columns %}
-                    <div class="column">
-                        {% include '_features.html' %}
-                    </div>
-                {% endfor %}
-            </div>
-            
             {% if shape %}
-            <button onclick="toggle_display()">View Dataset</button>
+                <div class="scrollfeat" id="" style="overflow:scroll; height:400px; outline-style: solid; outline-color: black;">
+                    {% for column in columns %}
+                        <div class="column">
+                            {% include '_features.html' %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <br>
+            {% if shape %}
+            <button onclick="toggle_display()">Hide/Show Dataset</button>
+            Shape is: {{ shape }}
+            <br>
             {% endif %}
         </div>
-        <div class="content_section content" id="" style="overflow:scroll; height:400px;">
-            {% for table in tables %}
-                {{ columns[loop.index] }}
-                {{ table|safe }}
-            {% endfor %}
-        </div>
+        <br>
+        {% if shape %}
+            <div class="content_section content" id="" style="overflow:scroll; height:400px; outline-style: solid; outline-color: black;">
+                {% for table in tables %}
+                    {{ columns[loop.index] }}
+                    {{ table|safe }}
+                {% endfor %}
+            </div>
+        {% endif %}
     </body>
   
-        
 {% endblock %}

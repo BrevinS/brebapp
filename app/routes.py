@@ -2,13 +2,18 @@ from flask import render_template, flash, redirect, url_for, request
 from app import app, db
 from flask_sqlalchemy import sqlalchemy
 from app.forms import RegisterForm, LoginForm
-from app.models import User
+from app.models import User, Dataframe, Tag
 from flask_login import current_user, login_user, logout_user, login_required
 import pandas as pd
 
 @app.before_first_request
 def initDB(*args, **kwargs):
     db.create_all()
+    if Tag.query.count() == 0:
+        tags = ['Identifier', 'Feature']
+        for t in tags:
+            db.session.add(Tag(name=t))
+        db.session.commit()
 
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET'])
@@ -73,4 +78,6 @@ def homepage():
         else:
             flash('FILE MUST BE OF TYPE .csv')
     return render_template('homepage.html')
+
+
 
