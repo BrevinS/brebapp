@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request
 from app import app, db
 from flask_sqlalchemy import sqlalchemy
-from app.forms import RegisterForm, LoginForm
+from app.forms import RegisterForm, LoginForm, FeatureForm
 from app.models import User, Dataframe, Tag
 from flask_login import current_user, login_user, logout_user, login_required
 import pandas as pd
@@ -78,6 +78,29 @@ def homepage():
         else:
             flash('FILE MUST BE OF TYPE .csv')
     return render_template('homepage.html')
+
+@app.route('/identify/<column>', methods=['GET', 'POST'])
+def identify(column):
+    if column:
+        # They actually clicked something
+        flash("Selected For Identifier{}".format(column))
+        #return redirect(url_for('homepage.html'))
+    #form = FeatureForm()
+    #if form.validate_on_submit():
+    #    return redirect(url_for('index'))
+    return render_template('homepage.html')
+
+@app.route('/feature/<column>', methods=['GET', 'POST'])
+def feature(column):
+    if column:
+        # They actually clicked something
+        flash("Selected For Feature{}".format(column))
+        #return redirect(url_for('homepage'))
+    #form = FeatureForm()
+    #if form.validate_on_submit():
+    #    return redirect(url_for('index'))
+    return render_template('homepage.html')
+
 
 
 
