@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, FloatField, IntegerField, PasswordField, SelectField, BooleanField
 from wtforms.validators import ValidationError, Length, DataRequired, Email, EqualTo
-from app.models import User
+from app.models import User, Tag
 
 class RegisterForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -28,4 +28,12 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     rememberme = BooleanField('Remember Me')
     submit = SubmitField('Sign In')
+
+def get_tag():
+    return Tag.query
+
+class FeatureForm(FlaskForm):
+    role = SelectField('Reference', choices = [(1, 'Identifier'), (2, 'Feature')])
+    submit = SubmitField('')
+
 
