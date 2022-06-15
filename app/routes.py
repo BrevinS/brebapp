@@ -83,22 +83,26 @@ def homepage():
 def identify(column):
     if column:
         # They actually clicked something
+        column = Dataframe(identifier=column)
+        db.session.add(column)
+        db.session.commit()
         flash("Selected For Identifier{}".format(column))
+        redirect(url_for('homepage'))
         #return redirect(url_for('homepage.html'))
     #form = FeatureForm()
     #if form.validate_on_submit():
     #    return redirect(url_for('index'))
-    return render_template('homepage.html')
+    #return render_template('homepage.html')
 
 @app.route('/feature/<column>', methods=['GET', 'POST'])
 def feature(column):
-    if column:
+    #if column:
         # They actually clicked something
-        flash("Selected For Feature{}".format(column))
+    #    flash("Selected For Feature{}".format(column))
         #return redirect(url_for('homepage'))
-    #form = FeatureForm()
-    #if form.validate_on_submit():
-    #    return redirect(url_for('index'))
+    form = FeatureForm()
+    if form.validate_on_submit():
+        return redirect(url_for('index'))
     return render_template('homepage.html')
 
 
