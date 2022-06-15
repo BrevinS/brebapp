@@ -27,15 +27,6 @@
     background-color: bisque;
 }
 
-.myBox {
-    border: none;
-    padding: 5px;
-    font: 24px/36px sans-serif;
-    width: 200px;
-    height: 200px;
-    overflow: scroll;
-}
-
 .center {
     margin: auto;
     width: 50%;
