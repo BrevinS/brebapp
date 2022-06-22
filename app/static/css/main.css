@@ -16,6 +16,10 @@
     margin-right: auto;
 }
 
+.navbar-inner {
+    height: 40px;  
+}
+
 .scrollfeat {
     outline-style: solid;
     outline-color: black;

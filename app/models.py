@@ -7,10 +7,10 @@ def load_user(id):
     return User.query.get(int(id))
 
 #Relationships
-coltags = db.Table('coltags',
-    db.Column('df_id', db.Integer, db.ForeignKey('dataframe.id')),
-    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'))
-    )
+#coltags = db.Table('coltags',
+#    db.Column('df_id', db.Integer, db.ForeignKey('dataframe.id')),
+#    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'))
+#    )
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -26,23 +26,33 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+# This can be one-to-one or one-to-many from user
 class Dataframe(db.Model):
+    # id for Dataframe
     id = db.Column(db.Integer, primary_key=True)
-    identifier = db.Column(db.String(100), unique=False)
-    features = db.Column(db.String(2000), unique=False)
+    # unique identifer for Dataframe (can be changed in new session)
+    identifier = db.Column(db.String(100), unique=True)
+    # many features (one-to-many relationship)
+    features = db.relationship('Features', backref='Dataframe')
 
-    tags = db.relationship('Tag', secondary=coltags,
-                            primaryjoin=(coltags.c.df_id == id),
-                            backref=db.backref('coltags', lazy='dynamic'), lazy='dynamic')
+# One-to-many from Dataframe
+class Features(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    feature_name = db.Column(db.String(100), unique=False)
+    dataframe_id = db.Column(db.Integer, db.ForeignKey('dataframe.id'))
+
+    #tags = db.relationship('Tag', secondary=coltags,
+    #                        primaryjoin=(coltags.c.df_id == id),
+    #                        backref=db.backref('coltags', lazy='dynamic'), lazy='dynamic')
 
 class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20))
     
-    courses = db.relationship('Dataframe', secondary=coltags,
-                               primaryjoin=(coltags.c.tag_id == id),
-                               backref=db.backref('coltags', lazy='dynamic'),
-                               lazy='dynamic')
+    #courses = db.relationship('Dataframe', secondary=coltags,
+    #                           primaryjoin=(coltags.c.tag_id == id),
+    #                           backref=db.backref('coltags', lazy='dynamic'),
+    #                           lazy='dynamic')
 
 
 
