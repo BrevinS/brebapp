@@ -3,6 +3,11 @@
     color: black;
 }
 
+.content {
+    max-width: 800px;
+    margin: auto;
+}
+
 .datahome {
     text-align : center;
     width : 50%;
