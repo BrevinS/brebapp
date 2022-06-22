@@ -20,40 +20,29 @@
     </style>
     <body>
         <div class="content">
-            <h1>Upload a file (.csv)</h1>
-            <form method=post enctype=multipart/form-data>
-                <input type=file name=file style="text-align: right;">
-                <input type="submit" value=Upload>
-            </form>
-
             Dataframe Columns (Identify one "Identifier" column and any number of "Feature" columns)
             <br>
             
-            {% if shape %}
-                <div class="scrollfeat" id="" style="overflow:scroll; height:400px; outline-style: solid; outline-color: black;">
-                    {% for column in columns %}
-                        <div class="column">
-                            {% include '_features.html' %}
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
+            <div class="scrollfeat" id="" style="overflow:scroll; height:400px; outline-style: solid; outline-color: black;">
+                {% for column in columns %}
+                    <div class="column">
+                        {% include '_features.html' %}
+                    </div>
+                {% endfor %}
+            </div>
+    
             <br>
-            {% if shape %}
             <button onclick="toggle_display()">Hide/Show Dataset</button>
             Shape is: {{ shape }}
             <br>
-            {% endif %}
         </div>
         <br>
-        {% if shape %}
             <div class="content_section content" id="" style="overflow:scroll; height:400px; outline-style: solid; outline-color: black;">
                 {% for table in tables %}
                     {{ columns[loop.index] }}
                     {{ table|safe }}
                 {% endfor %}
             </div>
-        {% endif %}
         <br>
     </body>
   
