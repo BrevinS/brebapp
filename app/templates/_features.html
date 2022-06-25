@@ -5,12 +5,12 @@
     </td>
     <td width="20%">
         <!--One form for the Identifier and another form with different route for Feature-->
-        <form action="{{ url_for('homepage') }}" method="post" style="text-align:right">
+        <form action="{{ url_for('dataframe', dataframe_id=data) }}" method="post" style="text-align:right">
             <input type="submit" value="Identifier" name="Identify">
         </form>
         
-        <form method="post" style="text-align:right">
-            <input type="submit" value="Feature" name="Feat">
+        <form action="{{ url_for('dataframe', dataframe_id=data) }}" method="post" style="text-align:right">
+            <input type="submit" value=" Feature " name="Feat">
         </form>
     </td>
 </table>

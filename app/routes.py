@@ -2,9 +2,10 @@ from flask import render_template, flash, redirect, url_for, request
 from app import app, db
 from flask_sqlalchemy import sqlalchemy
 from app.forms import RegisterForm, LoginForm, FeatureForm
-from app.models import User, Dataframe, Features,Tag
+from app.models import User, Dataframe, Feature,Tag
 from flask_login import current_user, login_user, logout_user, login_required
 import pandas as pd
+import sqlite3
 
 @app.before_first_request
 def initDB(*args, **kwargs):
@@ -73,10 +74,30 @@ def homepage():
         data = request.files['file']
         if data and allowed_file(data.filename):
             df = pd.read_csv(request.files.get('file'))
-            # Give HTML shape for example
+
+            print("Shape of df {}".format(df.shape))
+
+            conn = sqlite3.connect('dataframe.db')
+            c = conn.cursor()
+            # Don't append
+            df.to_sql('dataframe', conn, if_exists='replace', index = False)
+            conn.commit()
+
+            p = pd.read_sql('select * from dataframe', conn)
+            print('Dataframe {}'.format(p))
+            conn.close()
+
+            dataf = Dataframe(identifier="tester")
+            db.session.add(dataf)
+            db.session.commit()
+            # Move data to feature selection
+            #return redirect(url_for('dataframe', tables=[df.to_html(classes='data', header="true")],
+            #    columns=df.columns.values, dataframe_id=dataf.id))
+            
             return render_template('dataframe.html', 
                 tables=[df.to_html(classes='data', header="true")],
-                columns=df.columns.values)
+                columns=df.columns.values, dataframe_id=dataf.id, dataframe=dataf)
+            
             #return render_template('homepage.html', shape=df.shape, 
             #    tables=[df.to_html(classes='data', header="true")], 
             #    columns=df.columns.values, feats=[])
@@ -84,11 +105,16 @@ def homepage():
             flash('FILE MUST BE OF TYPE .csv')
     return render_template('homepage.html')
 
-@app.route('/dataframe')
-def dataframe(tables, columns):
-    pass
-
-
+@app.route('/dataframe/<dataframe_id>', methods=['GET', 'POST'])
+def dataframe(dataframe_id):
+    dataf = Dataframe.query.get(dataframe_id)
+    if request.method == 'POST':
+        feature = Feature(feature_name=request.form['Feat'], Dataframe=dataf)
+        db.session.add(feature)
+        db.session.commit()
+        return redirect(url_for('dataframe', dataframe_id=dataf.id))
+    
+    return redirect('dataframe', dataframe_id=dataf.id)
 
 @app.route('/identify/<column>', methods=['GET', 'POST'])
 def identify(column):
