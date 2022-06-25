@@ -33,10 +33,10 @@ class Dataframe(db.Model):
     # unique identifer for Dataframe (can be changed in new session)
     identifier = db.Column(db.String(100), unique=True)
     # many features (one-to-many relationship)
-    features = db.relationship('Features', backref='Dataframe')
+    features = db.relationship('Feature', backref='Dataframe')
 
 # One-to-many from Dataframe
-class Features(db.Model):
+class Feature(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     feature_name = db.Column(db.String(100), unique=False)
     dataframe_id = db.Column(db.Integer, db.ForeignKey('dataframe.id'))
