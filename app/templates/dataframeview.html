@@ -26,9 +26,10 @@
             <div class="scrollfeat" id="" style="overflow:scroll; height:400px; outline-style: solid; outline-color: black;">
                 {% for column in columns %}
                     <div class="column">
-                        {% with data=dataframe_id %}
+                        {% with data1=dataframe_id %}
                             {% include '_features.html' %}
-                            {{ data }}
+                            {{ data1 }}
+
                         {% endwith %}
                     </div>
                 {% endfor %}
