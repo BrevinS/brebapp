@@ -128,11 +128,27 @@ def dataframeview(dataframe_id):
 # Add feature tag to given column in given dataframe
 @app.route('/addfeature/<column_name>/<dataframe_id>', methods=['POST'])
 def addfeature(column_name, dataframe_id):
+    t = Tag(name="Feature")
     dataframe = Dataframe.query.get(dataframe_id)
-    for feat in Dataframe.features:
+    for feat in dataframe.features:
         if column_name == feat.feature_name:
-            pass
-            
+            print('Added feature')
+            feat.tags.append(t)
+    db.session.commit()
+
+    return redirect(url_for('dataframeview', dataframe_id=dataframe.id))
+
+# Add identifier tag to given column in given dataframe
+@app.route('/addidentifier/<column_name>/<dataframe_id>', methods=['POST'])
+def addidentifier(column_name, dataframe_id):
+    t = Tag(name="Identifier")
+    dataframe = Dataframe.query.get(dataframe_id)
+    for feat in dataframe.features:
+        if column_name == feat.feature_name:
+            print('Added identifier')
+            feat.tags.append(t)
+    db.session.commit()
+
     return redirect(url_for('dataframeview', dataframe_id=dataframe.id))
 
 @app.route('/dataframe/<dataframe_id>', methods=['GET', 'POST'])
