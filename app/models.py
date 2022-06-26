@@ -48,11 +48,7 @@ class Feature(db.Model):
 class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20))
-    
-    #courses = db.relationship('Dataframe', secondary=coltags,
-    #                           primaryjoin=(coltags.c.tag_id == id),
-    #                           backref=db.backref('coltags', lazy='dynamic'),
-    #                           lazy='dynamic')
+
 
 
 

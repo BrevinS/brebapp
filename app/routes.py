@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request
 from app import app, db
 from flask_sqlalchemy import sqlalchemy
-from app.forms import RegisterForm, LoginForm, FeatureForm
+from app.forms import RegisterForm, LoginForm
 from app.models import User, Dataframe, Feature,Tag
 from flask_login import current_user, login_user, logout_user, login_required
 import pandas as pd
@@ -99,19 +99,8 @@ def homepage():
 
             db.session.add(d)
             db.session.commit()
-            # Move data to feature selection
-            #return render_template('dataframeview.html', 
-            #    tables=[df.to_html(classes='data', header="true")],
-            #    columns=df.columns.values, dataframe=dataf)
 
             return redirect(url_for('dataframeview', dataframe_id=d.id))
-            #return render_template('dataframe.html', 
-            #    tables=[df.to_html(classes='data', header="true")],
-            #    columns=df.columns.values, dataframe_id=dataf.id, dataframe=dataf)
-            
-            #return render_template('homepage.html', shape=df.shape, 
-            #    tables=[df.to_html(classes='data', header="true")], 
-            #    columns=df.columns.values, feats=[])
         else:
             flash('FILE MUST BE OF TYPE .csv')
     return render_template('homepage.html')
@@ -132,7 +121,7 @@ def addfeature(column_name, dataframe_id):
     dataframe = Dataframe.query.get(dataframe_id)
     for feat in dataframe.features:
         if column_name == feat.feature_name:
-            print('Added feature')
+            print('Added feature - name: {} tag name: {}'.format(feat.feature_name, t.name))
             feat.tags.append(t)
     db.session.commit()
 
@@ -145,7 +134,7 @@ def addidentifier(column_name, dataframe_id):
     dataframe = Dataframe.query.get(dataframe_id)
     for feat in dataframe.features:
         if column_name == feat.feature_name:
-            print('Added identifier')
+            print('Added identifier - name: {} tag name: {}'.format(feat.feature_name, t.name))
             feat.tags.append(t)
     db.session.commit()
 
@@ -160,33 +149,4 @@ def dataframe(dataframe_id):
         db.session.commit()
         return redirect(url_for('dataframe', dataframe_id=dataf.id))    
     return redirect(url_for('dataframe', dataframe_id=dataf.id))
-
-@app.route('/identify/<column>', methods=['GET', 'POST'])
-def identify(column):
-    if column:
-        # They actually clicked something
-        column = Dataframe(identifier=column)
-        db.session.add(column)
-        db.session.commit()
-        flash("Selected For Identifier{}".format(column))
-        redirect(url_for('homepage'))
-        #return redirect(url_for('homepage.html'))
-    #form = FeatureForm()
-    #if form.validate_on_submit():
-    #    return redirect(url_for('index'))
-    #return render_template('homepage.html')
-
-@app.route('/feature/<column>', methods=['GET', 'POST'])
-def feature(column):
-    #if column:
-        # They actually clicked something
-    #    flash("Selected For Feature{}".format(column))
-        #return redirect(url_for('homepage'))
-    form = FeatureForm()
-    if form.validate_on_submit():
-        return redirect(url_for('index'))
-    return render_template('homepage.html')
-
-
-
 
