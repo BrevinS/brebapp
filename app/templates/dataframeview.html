@@ -26,17 +26,16 @@
             <div class="scrollfeat" id="" style="overflow:scroll; height:400px; outline-style: solid; outline-color: black;">
                 {% for column in columns %}
                     <div class="column">
-                        {% with data1=dataframe_id %}
+                        
+                        {% with data=dataframe_id, featurelist=featlist, identitylist=identlist %}
                             {% include '_features.html' %}
-                            {{ data1 }}
-
                         {% endwith %}
                     </div>
                 {% endfor %}
             </div>
             
             {% for features in dataframe.features %}
-
+                
             {% endfor %}
             <br>
             <button onclick="toggle_display()">Hide/Show Dataset</button>
