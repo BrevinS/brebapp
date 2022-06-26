@@ -31,9 +31,3 @@ class LoginForm(FlaskForm):
 
 def get_tag():
     return Tag.query
-
-class FeatureForm(FlaskForm):
-    role = SelectField('Reference', choices = [(1, 'Identifier'), (2, 'Feature')])
-    submit = SubmitField('')
-
-
