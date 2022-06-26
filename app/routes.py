@@ -74,12 +74,13 @@ def homepage():
         data = request.files['file']
         if data and allowed_file(data.filename):
             df = pd.read_csv(request.files.get('file'))
-
+            cf = df
             print("Shape of df {}".format(df.shape))
+
 
             conn = sqlite3.connect('dataframe.db')
             c = conn.cursor()
-            # Don't append
+            # Don't append - WE CAN TUPLE With current_user.id? 
             df.to_sql('dataframe', conn, if_exists='replace', index = False)
             conn.commit()
 
@@ -87,16 +88,26 @@ def homepage():
             print('Dataframe {}'.format(p))
             conn.close()
 
-            dataf = Dataframe(identifier="tester")
-            db.session.add(dataf)
+            # Initialize Dataframe
+            d = Dataframe(identifier="nothing")
+            
+            # Add all columns as featues (Tags must be used)
+            for col in cf.columns:
+                #print(col)
+                f = Feature(feature_name=col)
+                d.features.append(f)
+
+            db.session.add(d)
             db.session.commit()
             # Move data to feature selection
-            #return redirect(url_for('dataframe', tables=[df.to_html(classes='data', header="true")],
-            #    columns=df.columns.values, dataframe_id=dataf.id))
-            
-            return render_template('dataframe.html', 
-                tables=[df.to_html(classes='data', header="true")],
-                columns=df.columns.values, dataframe_id=dataf.id, dataframe=dataf)
+            #return render_template('dataframeview.html', 
+            #    tables=[df.to_html(classes='data', header="true")],
+            #    columns=df.columns.values, dataframe=dataf)
+
+            return redirect(url_for('dataframeview', dataframe_id=d.id))
+            #return render_template('dataframe.html', 
+            #    tables=[df.to_html(classes='data', header="true")],
+            #    columns=df.columns.values, dataframe_id=dataf.id, dataframe=dataf)
             
             #return render_template('homepage.html', shape=df.shape, 
             #    tables=[df.to_html(classes='data', header="true")], 
@@ -105,6 +116,25 @@ def homepage():
             flash('FILE MUST BE OF TYPE .csv')
     return render_template('homepage.html')
 
+@app.route('/dataframeview/<dataframe_id>', methods=['GET'])
+def dataframeview(dataframe_id):
+    conn = sqlite3.connect('dataframe.db')
+    c = conn.cursor()
+    df = pd.read_sql('select * from dataframe', conn)
+    
+    return render_template('dataframeview.html', tables=[df.to_html(classes='data', header="true")],
+                columns=df.columns.values, dataframe=df, dataframe_id=dataframe_id)
+
+# Add feature tag to given column in given dataframe
+@app.route('/addfeature/<column_name>/<dataframe_id>', methods=['POST'])
+def addfeature(column_name, dataframe_id):
+    dataframe = Dataframe.query.get(dataframe_id)
+    for feat in Dataframe.features:
+        if column_name == feat.feature_name:
+            pass
+            
+    return redirect(url_for('dataframeview', dataframe_id=dataframe.id))
+
 @app.route('/dataframe/<dataframe_id>', methods=['GET', 'POST'])
 def dataframe(dataframe_id):
     dataf = Dataframe.query.get(dataframe_id)
@@ -112,9 +142,8 @@ def dataframe(dataframe_id):
         feature = Feature(feature_name=request.form['Feat'], Dataframe=dataf)
         db.session.add(feature)
         db.session.commit()
-        return redirect(url_for('dataframe', dataframe_id=dataf.id))
-    
-    return redirect('dataframe', dataframe_id=dataf.id)
+        return redirect(url_for('dataframe', dataframe_id=dataf.id))    
+    return redirect(url_for('dataframe', dataframe_id=dataf.id))
 
 @app.route('/identify/<column>', methods=['GET', 'POST'])
 def identify(column):

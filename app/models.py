@@ -7,10 +7,10 @@ def load_user(id):
     return User.query.get(int(id))
 
 #Relationships
-#coltags = db.Table('coltags',
-#    db.Column('df_id', db.Integer, db.ForeignKey('dataframe.id')),
-#    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'))
-#    )
+coltags = db.Table('coltags',
+    db.Column('df_id', db.Integer, db.ForeignKey('dataframe.id')),
+    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'))
+    )
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -33,7 +33,7 @@ class Dataframe(db.Model):
     # unique identifer for Dataframe (can be changed in new session)
     identifier = db.Column(db.String(100), unique=True)
     # many features (one-to-many relationship)
-    features = db.relationship('Feature', backref='Dataframe')
+    features = db.relationship('Feature', backref='Dataframe', uselist=True)
 
 # One-to-many from Dataframe
 class Feature(db.Model):
@@ -41,9 +41,9 @@ class Feature(db.Model):
     feature_name = db.Column(db.String(100), unique=False)
     dataframe_id = db.Column(db.Integer, db.ForeignKey('dataframe.id'))
 
-    #tags = db.relationship('Tag', secondary=coltags,
-    #                        primaryjoin=(coltags.c.df_id == id),
-    #                        backref=db.backref('coltags', lazy='dynamic'), lazy='dynamic')
+    tags = db.relationship('Tag', secondary=coltags,
+                            primaryjoin=(coltags.c.df_id == id),
+                            backref=db.backref('coltags', lazy='dynamic'), lazy='dynamic')
 
 class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
