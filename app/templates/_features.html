@@ -1,15 +1,30 @@
 <table class="featable" padding="2px">
     <br>
-    <td width="100%">
+    <td width="70%">
         Header: {{ column }}
     </td>
+ 
+    <td width="35%" style="text-align: center; vertical-align: middle;">
+        {% for feat in featurelist %}
+            {% if column == feat %}
+                Selected: Identifier
+            {% endif %}
+        {% endfor %}
+
+        {% for ident in identitylist %}
+            {% if column == ident %}
+                Selected: Feature
+            {% endif %}
+        {% endfor %}
+    </td>
+
     <td width="20%">
         <!--One form for the Identifier and another form with different route for Feature-->
-        <form action="{{ url_for('addidentifier', column_name=column, dataframe_id=data1) }}" method="post" style="text-align:right">
+        <form action="{{ url_for('addidentifier', column_name=column, dataframe_id=data) }}" method="post" style="text-align:right">
             <input type="submit" value="Identifier" name="Identify">
         </form>
         
-        <form action="{{ url_for('addfeature', column_name=column, dataframe_id=data1) }}" method="post" style="text-align:right">
+        <form action="{{ url_for('addfeature', column_name=column, dataframe_id=data) }}" method="post" style="text-align:right">
             <input type="submit" value=" Feature " name="Feat">
         </form>
     </td>

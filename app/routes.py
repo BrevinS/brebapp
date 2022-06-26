@@ -5,6 +5,7 @@ from app.forms import RegisterForm, LoginForm
 from app.models import User, Dataframe, Feature,Tag
 from flask_login import current_user, login_user, logout_user, login_required
 import pandas as pd
+import numpy as np
 import sqlite3
 
 @app.before_first_request
@@ -110,9 +111,30 @@ def dataframeview(dataframe_id):
     conn = sqlite3.connect('dataframe.db')
     c = conn.cursor()
     df = pd.read_sql('select * from dataframe', conn)
+
+    # To reference in _features.html loop in dataframeview.html
+    dataf = Dataframe.query.get(dataframe_id)
+    feats = []
+    idents = []
+    ac = df.columns.values
+    for feat in dataf.features:
+        for t in feat.tags:
+            if t.name == 'Identifier':
+                index = np.argwhere(ac==feat.feature_name)
+                y = np.delete(ac, index)
+
+                feats.append(feat.feature_name)
+            elif t.name == 'Feature':
+                index = np.argwhere(ac==feat.feature_name)
+                y = np.delete(ac, index)
+
+                idents.append(feat.feature_name)
+            else:
+                ac = feat.feature_name
     
     return render_template('dataframeview.html', tables=[df.to_html(classes='data', header="true")],
-                columns=df.columns.values, dataframe=df, dataframe_id=dataframe_id)
+                columns=ac, dataframe=dataf, dataframe_id=dataframe_id,
+                featlist=feats, identlist=idents)
 
 # Add feature tag to given column in given dataframe
 @app.route('/addfeature/<column_name>/<dataframe_id>', methods=['POST'])
@@ -139,6 +161,11 @@ def addidentifier(column_name, dataframe_id):
     db.session.commit()
 
     return redirect(url_for('dataframeview', dataframe_id=dataframe.id))
+
+
+
+
+
 
 @app.route('/dataframe/<dataframe_id>', methods=['GET', 'POST'])
 def dataframe(dataframe_id):
