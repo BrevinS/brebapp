@@ -1,10 +1,9 @@
-<table class="featable" padding="2px">
-    <br>
-    <td width="70%">
+<table class="featable" padding="2px" style="table-layout:fixed; border-color: black; outline-style:double;">
+    <td style="width: 460px; padding-left: 5px;">
         Header: {{ column }}
     </td>
  
-    <td width="35%" style="text-align: center; vertical-align: middle; background-color: cornsilk;">
+    <td style="width: 185px; text-align: center; vertical-align: left; background-color: darkseagreen;">
         {% for feat in featurelist %}
             {% if column == feat %}
                 Selected: Identifier
@@ -18,14 +17,19 @@
         {% endfor %}
     </td>
 
-    <td width="20%">
+    <td style="width: 120px">
         <!--One form for the Identifier and another form with different route for Feature-->
         <form action="{{ url_for('addidentifier', column_name=column, dataframe_id=data) }}" method="post" style="text-align:right">
-            <input type="submit" value="Identifier" name="Identify">
+            <input type="submit" value="Identifier" name="Identify" style="width: 72px">
         </form>
     
         <form action="{{ url_for('addfeature', column_name=column, dataframe_id=data) }}" method="post" style="text-align:right">
-            <input type="submit" value=" Feature " name="Feat">
+            <input type="submit" value=" Feature " name="Feat" style="width: 72px">
         </form>
     </td>
+
+    <td style="padding-right: 45px;">
+
+    </td>
+
 </table>
