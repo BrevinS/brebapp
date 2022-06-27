@@ -129,9 +129,7 @@ def dataframeview(dataframe_id):
                 y = np.delete(ac, index)
 
                 idents.append(feat.feature_name)
-            else:
-                ac = feat.feature_name
-    
+
     return render_template('dataframeview.html', tables=[df.to_html(classes='data', header="true")],
                 columns=ac, dataframe=dataf, dataframe_id=dataframe_id,
                 featlist=feats, identlist=idents)
