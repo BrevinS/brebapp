@@ -142,7 +142,6 @@ def addfeature(column_name, dataframe_id):
     for feat in dataframe.features:
         if column_name == feat.feature_name:
             for r in feat.tags:
-                print('remove tags feature')
                 feat.tags.remove(r)  
             print('Added feature - name: {} tag name: {}'.format(feat.feature_name, t.name))
             feat.tags.append(t)
@@ -156,12 +155,17 @@ def addidentifier(column_name, dataframe_id):
     t = Tag(name="Identifier")
     dataframe = Dataframe.query.get(dataframe_id)
     for feat in dataframe.features:
+        # Reset all identifiers?
+        for f in feat.tags:
+            if f.name == 'Identifier':
+                feat.tags.remove(f)
         if column_name == feat.feature_name:
             for r in feat.tags:
-                print('remove tags identifier')
                 feat.tags.remove(r)    
             print('Added identifier - name: {} tag name: {}'.format(feat.feature_name, t.name))
             feat.tags.append(t)
+            dataframe.identifier = column_name
+            print("New dataframe.identifier {}".format(dataframe.identifier))
     db.session.commit()
 
     return redirect(url_for('dataframeview', dataframe_id=dataframe.id))

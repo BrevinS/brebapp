@@ -17,18 +17,21 @@
       max-width: 800px;
       margin: auto;
     }
+    .feat {
+        background-color: black;
+    }
     </style>
     <body>
         <div class="content">
             Dataframe Columns (Identify one "Identifier" column and any number of "Feature" columns)
             <br>
             
-            <div class="scrollfeat" id="" style="overflow:scroll; height:400px; outline-style: solid; outline-color: black;">
+            <div style="overflow:scroll; height:400px; outline-style: solid;">
                 {% for column in columns %}
                     <div class="column">
-                        
                         {% with data=dataframe_id, featurelist=featlist, identitylist=identlist %}
                             {% include '_features.html' %}
+                            <br>
                         {% endwith %}
                     </div>
                 {% endfor %}
