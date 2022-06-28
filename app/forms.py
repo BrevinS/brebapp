@@ -31,3 +31,4 @@ class LoginForm(FlaskForm):
 
 def get_tag():
     return Tag.query
+    
