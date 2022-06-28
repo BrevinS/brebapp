@@ -85,7 +85,7 @@ def homepage():
             conn.commit()
 
             p = pd.read_sql('select * from dataframe', conn)
-            print('Dataframe {}'.format(p))
+            #print('Dataframe {}'.format(p))
             conn.close()
 
             # Initialize Dataframe
@@ -118,12 +118,24 @@ def unsupervised(dataframe_id):
             if t.name == 'Identifier':
                 identlist.append(feat.feature_name)
 
-
     print('Feature list {}'.format(featurelist))
     print('Identifier Vector {}'.format(identlist))
 
-    pass
-    #render_template
+    # Put Features after identifier vector
+    full = identlist + featurelist
+    refull = str(full)
+    # Refactor into a SQLITE Query-able string, this looks bad but works
+    refull = refull.replace('\'', "")
+    refull = refull.replace('[', "")
+    refull = refull.replace(']', "")
+
+    # Now I need Query database.db for featurelist with identlist at the start
+    conn = sqlite3.connect('dataframe.db')
+    c = conn.cursor()
+    df = pd.read_sql('SELECT {} FROM dataframe'.format(refull), conn)
+
+
+    return render_template('unsupervised.html', featlist=featurelist, identlist=identlist)
 
 
 @app.route('/dataframeview/<dataframe_id>', methods=['GET'])

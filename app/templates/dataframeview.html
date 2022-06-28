@@ -2,24 +2,24 @@
 
 {% block content %}
     <script>
-    function toggle_display(){
-        el = document.querySelector('.content_section');
-    
-        if(el.style.visibility == 'hidden'){
-            el.style.visibility = 'visible'
-        }else{
-            el.style.visibility = 'hidden'
+        function toggle_display(){
+            el = document.querySelector('.content_section');
+        
+            if(el.style.visibility == 'hidden'){
+                el.style.visibility = 'visible'
+            }else{
+                el.style.visibility = 'hidden'
+            }
         }
-    }
-    </script>
+        </script>
     <style>
-    .content {
-      max-width: 800px;
-      margin: auto;
-    }
-    .feat {
-        background-color: black;
-    }
+        .content {
+        max-width: 800px;
+        margin: auto;
+        }
+        .feat {
+            background-color: black;
+        }
     </style>
     <body>
         <div class="content">
@@ -42,7 +42,8 @@
             {% if (featlist|length) >= 2 %}
                 {% if (identlist|length) == 1 %}
                     <!--WE HAVE ACCESS TO FEATLIST, IDENTLIST, and MORE-->
-                    <form action="{{ url_for('unsupervised', dataframe_id=dataframe_id, featurelist=featlist, identitylist=identlist) }}">
+                    <form action="{{ url_for('unsupervised', dataframe_id=dataframe_id, featurelist=featlist, identitylist=identlist, 
+                                    table=tables) }}">
                         <button style="float: right;">Submit</button>
                     </form>
                     {% endif %}
