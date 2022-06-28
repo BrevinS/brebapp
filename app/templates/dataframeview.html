@@ -39,8 +39,8 @@
             <br>
             <button onclick="toggle_display()">Hide/Show Dataset</button>
             Shape is: {{ shape }}
-            {% if (featlist|length) == 1 %}
-                {% if (identlist|length) >= 2 %}
+            {% if (featlist|length) >= 2 %}
+                {% if (identlist|length) == 1 %}
                     <button style="float: right;">Submit</button>
                 {% endif %}
             {% endif %}
