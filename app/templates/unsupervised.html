@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<script>
+    function toggle_display(){
+        el = document.querySelector('.content_section');
+    
+        if(el.style.visibility == 'hidden'){
+            el.style.visibility = 'visible'
+        }else{
+            el.style.visibility = 'hidden'
+        }
+    }
+</script>
+<style>
+    .content {
+      max-width: 800px;
+      margin: auto;
+    }
+</style>    
+    <!--Must pass in tables!-->
+    <div class="content_section content" id="" style="overflow:scroll; height:400px; outline-style: solid; outline-color: black;">
+        {% for table in tables %}
+            {{ columns[loop.index] }}
+            {{ table|safe }}
+        {% endfor %}
+    </div>
+  
+
+{% endblock %}
