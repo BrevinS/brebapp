@@ -41,8 +41,11 @@
             Shape is: {{ shape }}
             {% if (featlist|length) >= 2 %}
                 {% if (identlist|length) == 1 %}
-                    <button style="float: right;">Submit</button>
-                {% endif %}
+                    <!--WE HAVE ACCESS TO FEATLIST, IDENTLIST, and MORE-->
+                    <form action="{{ url_for('unsupervised', dataframe_id=dataframe_id, featurelist=featlist, identitylist=identlist) }}">
+                        <button style="float: right;">Submit</button>
+                    </form>
+                    {% endif %}
             {% endif %}
             <br>
         </div>
