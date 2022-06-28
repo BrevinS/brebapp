@@ -33,7 +33,7 @@
             {% endfor %}
         </div>
         <br>
-        <form action="{{ url_for('unsuperanalysis') }}">
+        <form action="{{ url_for('unsuperanalysis', dataframe_id=dataframe_id) }}">
             {{ value }}
             <label>Unsupervised Algorithm:</label>
             <select name="algorithm" id="algorithm">

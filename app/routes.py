@@ -105,33 +105,43 @@ def homepage():
             flash('FILE MUST BE OF TYPE .csv')
     return render_template('homepage.html')
 
+# Takes in python list of headers for SELECT {} FROM database.db
 def sqlite3string(headers):
     new = []
     for string in headers:
+        # Add quotes around headers with a space in it
         if " " in string:
             new.append("\"" + string + "\"")
         else:
             new.append(string)
-    
     refull = str(new)
     # Refactor into a SQLITE Query-able string, this looks bad but works
+    # Remove ' from whole string
     refull = refull.replace('\'', "")
+    # Remove [ and ] from the beginning and end of string
     refull = refull[1:-1]
 
     return refull
 
-# Submit unsupervised dataset
-@app.route('/unsupervised/<dataframe_id>', methods=['GET'])
-def unsupervised(dataframe_id):
-    dataf = Dataframe.query.get(dataframe_id)
+# TAKES IN dataframe (pandas)
+def returnfeatures(df):
     featurelist = []
-    identlist = [] # Left with one. Should be located in Dataframe(identifier) anyway...
-    for feat in dataf.features:
+    identlist = [] 
+    for feat in df.features:
         for t in feat.tags:
             if t.name == 'Feature':
                 featurelist.append(feat.feature_name)
             if t.name == 'Identifier':
                 identlist.append(feat.feature_name)
+    
+    return featurelist, identlist
+
+# Submit unsupervised dataset
+@app.route('/unsupervised/<dataframe_id>', methods=['GET'])
+def unsupervised(dataframe_id):
+    dataf = Dataframe.query.get(dataframe_id)
+    
+    featurelist, identlist = returnfeatures(dataf)
 
     print('Feature list {}'.format(featurelist))
     print('Identifier Vector {}'.format(identlist))
@@ -151,13 +161,17 @@ def unsupervised(dataframe_id):
     return render_template('unsupervised.html', featlist=featurelist, identlist=identlist, 
                 tables=[df.to_html(classes='data', header="true")], columns=ac)
 
-@app.route('/unsuperanalysis', methods=['GET', 'POST'])
-def unsuperanalysis():
+@app.route('/unsuperanalysis/<dataframe_id>', methods=['GET', 'POST'])
+def unsuperanalysis(dataframe_id):
+    dataf = Dataframe.query.get(dataframe_id)
+
+    featurelist, identlist = returnfeatures(dataf)
+
     if request.method == 'POST':
         alg = request.form.get("algorithm")
         print('Algorithm is {}'.format(alg))
     
-    return render_template('unsuperanalysis.html')
+    return render_template('unsuperanalysis.html', dataframe_id=dataframe_id)
 
 
 @app.route('/dataframeview/<dataframe_id>', methods=['GET'])
@@ -171,12 +185,8 @@ def dataframeview(dataframe_id):
     feats = []
     idents = []
     ac = df.columns.values
-    for feat in dataf.features:
-        for t in feat.tags:
-            if t.name == 'Identifier':
-                idents.append(feat.feature_name)
-            elif t.name == 'Feature':
-                feats.append(feat.feature_name)
+    
+    feats, idents = returnfeatures(dataf)
 
     return render_template('dataframeview.html', tables=[df.to_html(classes='data', header="true")],
                 columns=ac, dataframe=dataf, dataframe_id=dataframe_id,
