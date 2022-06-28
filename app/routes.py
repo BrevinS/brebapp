@@ -105,6 +105,21 @@ def homepage():
             flash('FILE MUST BE OF TYPE .csv')
     return render_template('homepage.html')
 
+def sqlite3string(headers):
+    new = []
+    for string in headers:
+        if " " in string:
+            new.append("\"" + string + "\"")
+        else:
+            new.append(string)
+    
+    refull = str(new)
+    # Refactor into a SQLITE Query-able string, this looks bad but works
+    refull = refull.replace('\'', "")
+    refull = refull[1:-1]
+
+    return refull
+
 # Submit unsupervised dataset
 @app.route('/unsupervised/<dataframe_id>', methods=['GET'])
 def unsupervised(dataframe_id):
@@ -123,27 +138,26 @@ def unsupervised(dataframe_id):
 
     # Put Features after identifier vector
     full = identlist + featurelist
-    new = []
-    for string in full:
-        if " " in string:
-            new.append("\"" + string + "\"")
-        else:
-            new.append(string)
-        
-    refull = str(new)
-    # Refactor into a SQLITE Query-able string, this looks bad but works
-    refull = refull.replace('\'', "")
-    refull = refull[1:-1]
-    print('Refactored QUERY string: {}'.format(refull))
+    
+    # Python list of headers to SQlite3 
+    querylang = sqlite3string(full)
 
     # Now I need Query database.db for featurelist with identlist at the start
     conn = sqlite3.connect('dataframe.db')
     c = conn.cursor()
-    df = pd.read_sql('SELECT {} FROM dataframe'.format(refull), conn)
+    df = pd.read_sql('SELECT {} FROM dataframe'.format(querylang), conn)
     ac = df.columns.values
 
     return render_template('unsupervised.html', featlist=featurelist, identlist=identlist, 
                 tables=[df.to_html(classes='data', header="true")], columns=ac)
+
+@app.route('/unsuperanalysis', methods=['GET', 'POST'])
+def unsuperanalysis():
+    if request.method == 'POST':
+        alg = request.form.get("algorithm")
+        print('Algorithm is {}'.format(alg))
+    
+    return render_template('unsuperanalysis.html')
 
 
 @app.route('/dataframeview/<dataframe_id>', methods=['GET'])
@@ -203,18 +217,3 @@ def addidentifier(column_name, dataframe_id):
     db.session.commit()
 
     return redirect(url_for('dataframeview', dataframe_id=dataframe.id))
-
-
-
-
-
-@app.route('/dataframe/<dataframe_id>', methods=['GET', 'POST'])
-def dataframe(dataframe_id):
-    dataf = Dataframe.query.get(dataframe_id)
-    if request.method == 'POST':
-        feature = Feature(feature_name=request.form['Feat'], Dataframe=dataf)
-        db.session.add(feature)
-        db.session.commit()
-        return redirect(url_for('dataframe', dataframe_id=dataf.id))    
-    return redirect(url_for('dataframe', dataframe_id=dataf.id))
-

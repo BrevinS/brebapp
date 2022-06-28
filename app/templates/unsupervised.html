@@ -18,17 +18,32 @@
       margin: auto;
     }
 </style> 
-    <h1>
-        Unsupervised Training
-    </h1>
-    <button onclick="toggle_display()">Hide/Show Dataset</button>
-    <!--Must pass in tables!-->
-    <div class="content_section content" id="" style="overflow:scroll; height:400px; outline-style: solid; outline-color: black;">
-        {% for table in tables %}
-            {{ columns[loop.index] }}
-            {{ table|safe }}
-        {% endfor %}
+<body>
+    <div class="content">
+        <h1>
+            Unsupervised Training
+        </h1>
+
+        <br>
+        <!--Must pass in tables!-->
+        <div class="content_section content" id="" style="overflow:scroll; height:400px; outline-style: solid; outline-color: black;">
+            {% for table in tables %}
+                {{ columns[loop.index] }}
+                {{ table|safe }}
+            {% endfor %}
+        </div>
+        <br>
+        <form action="{{ url_for('unsuperanalysis') }}">
+            {{ value }}
+            <label>Unsupervised Algorithm:</label>
+            <select name="algorithm" id="algorithm">
+                <option value="kmeans">Kmeans Clustering</option>
+                <option value="pca">Principle Component Analysis</option>
+                <option value="hiercluster">Hierarchical Clustering</option>
+            </select>
+            <input type="submit" value="Submit">
+        </form>
     </div>
-  
+</body>
 
 {% endblock %}
