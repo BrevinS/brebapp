@@ -5,7 +5,6 @@ from app.forms import RegisterForm, LoginForm
 from app.models import User, Dataframe, Feature,Tag
 from flask_login import current_user, login_user, logout_user, login_required
 import pandas as pd
-import numpy as np
 import sqlite3
 
 @app.before_first_request
@@ -53,7 +52,7 @@ def login():
             flash('Not a username or incorrect password!')
             return redirect(url_for('login'))
         login_user(student, remember=form.rememberme.data)
-        return redirect(url_for('index'))
+        return redirect(url_for('homepage'))
     return render_template('login.html', title='Login Page', form=form)
 
 @app.route('/aboutme', methods=['GET', 'POST'])
@@ -120,19 +119,13 @@ def dataframeview(dataframe_id):
     for feat in dataf.features:
         for t in feat.tags:
             if t.name == 'Identifier':
-                index = np.argwhere(ac==feat.feature_name)
-                y = np.delete(ac, index)
-
                 feats.append(feat.feature_name)
             elif t.name == 'Feature':
-                index = np.argwhere(ac==feat.feature_name)
-                y = np.delete(ac, index)
-
                 idents.append(feat.feature_name)
 
     return render_template('dataframeview.html', tables=[df.to_html(classes='data', header="true")],
                 columns=ac, dataframe=dataf, dataframe_id=dataframe_id,
-                featlist=feats, identlist=idents)
+                featlist=feats, identlist=idents, shape=df.shape)
 
 # Add feature tag to given column in given dataframe
 @app.route('/addfeature/<column_name>/<dataframe_id>', methods=['POST'])
@@ -169,7 +162,6 @@ def addidentifier(column_name, dataframe_id):
     db.session.commit()
 
     return redirect(url_for('dataframeview', dataframe_id=dataframe.id))
-
 
 
 
