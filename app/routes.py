@@ -105,6 +105,27 @@ def homepage():
             flash('FILE MUST BE OF TYPE .csv')
     return render_template('homepage.html')
 
+# Submit unsupervised dataset
+@app.route('/unsupervised/<dataframe_id>', methods=['GET'])
+def unsupervised(dataframe_id):
+    dataf = Dataframe.query.get(dataframe_id)
+    featurelist = []
+    identlist = [] # Left with one. Should be located in Dataframe(identifier) anyway...
+    for feat in dataf.features:
+        for t in feat.tags:
+            if t.name == 'Feature':
+                featurelist.append(feat.feature_name)
+            if t.name == 'Identifier':
+                identlist.append(feat.feature_name)
+
+
+    print('Feature list {}'.format(featurelist))
+    print('Identifier Vector {}'.format(identlist))
+
+    pass
+    #render_template
+
+
 @app.route('/dataframeview/<dataframe_id>', methods=['GET'])
 def dataframeview(dataframe_id):
     conn = sqlite3.connect('dataframe.db')
