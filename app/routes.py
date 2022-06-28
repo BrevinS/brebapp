@@ -119,9 +119,9 @@ def dataframeview(dataframe_id):
     for feat in dataf.features:
         for t in feat.tags:
             if t.name == 'Identifier':
-                feats.append(feat.feature_name)
-            elif t.name == 'Feature':
                 idents.append(feat.feature_name)
+            elif t.name == 'Feature':
+                feats.append(feat.feature_name)
 
     return render_template('dataframeview.html', tables=[df.to_html(classes='data', header="true")],
                 columns=ac, dataframe=dataf, dataframe_id=dataframe_id,

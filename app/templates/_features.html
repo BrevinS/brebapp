@@ -6,13 +6,13 @@
     <td style="width: 185px; text-align: center; vertical-align: left; background-color: darkseagreen;">
         {% for feat in featurelist %}
             {% if column == feat %}
-                Selected: Identifier
+                Selected: Feature
             {% endif %}
         {% endfor %}
 
         {% for ident in identitylist %}
             {% if column == ident %}
-                Selected: Feature
+                Selected: Identifier
             {% endif %}
         {% endfor %}
     </td>
