@@ -1,8 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    .content {
+      max-width: 800px;
+      margin: auto;
+    }
+</style> 
 <body>
-    <div class="constent">
+    <div class="content">
         <h1>
             KMeans Clustering
         </h1>
@@ -22,6 +28,7 @@
                 {{ form.submit(class="button") }}
             </div>
         </form>
+        <img src='../static/foo.png'>
     </div>
 </body>
 

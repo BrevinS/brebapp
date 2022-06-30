@@ -7,6 +7,9 @@ from flask_login import current_user, login_user, logout_user, login_required
 import pandas as pd
 import sqlite3
 from sklearn.cluster import KMeans
+from sklearn.decomposition import PCA  
+from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
 
 @app.before_first_request
 def initDB(*args, **kwargs):
@@ -199,11 +202,29 @@ def kmeans(dataframe_id):
     # What more do we want? # of clusters?
     form = KMeanForm()
     n = 0
-    if form.validate_on_submit():
+    if request.method == 'POST' and form.validate_on_submit():
         n = form.nclusters.data
         model = KMeans(n_clusters=int(n))
-        flash('Number of Clusters!'.format(int(n)))
-        
+        #flash('Number of Clusters! {}'.format(int(n)))
+        print('Identity {}'.format(identlist))
+        X = df.loc[:, df.columns != '{}'.format(identlist[0])]
+        X = StandardScaler().fit_transform(X)
+        pca = PCA(n_components = int(len(featurelist)))
+        X = pca.fit_transform(X)
+        model.fit(X[:,:2])
+        print('CLUSTER CENTERS')
+        print(model.cluster_centers_)
+
+        plt.scatter(X[:,0],X[:,1], c=model.labels_, cmap='rainbow')
+        plt.savefig('foo.png')
+        #plt.xlabel('PCA 1')
+        #plt.ylabel('PCA 2')
+        #plt.show()
+        #labels = model.predict(PCA_components.iloc[:,:2])
+        ##plt.scatter(PCA_components[0], PCA_components[1], c=labels, cmap='viridis')
+        #plt.xlabel('PCA 1')
+        #plt.ylabel('PCA 2')
+        #print('Attempting to save juice')
 
 
     return render_template('kmeans.html', columns=ac, nclusters=n, 
