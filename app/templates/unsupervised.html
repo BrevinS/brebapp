@@ -33,16 +33,15 @@
             {% endfor %}
         </div>
         <br>
-        <form action="{{ url_for('unsuperanalysis', dataframe_id=dataframe_id) }}">
-            {{ value }}
-            <label>Unsupervised Algorithm:</label>
-            <select name="algorithm" id="algorithm">
-                <option value="kmeans">Kmeans Clustering</option>
-                <option value="pca">Principle Component Analysis</option>
-                <option value="hiercluster">Hierarchical Clustering</option>
-            </select>
-            <input type="submit" value="Submit">
+        <form action="" method="post">
+            {{ form.hidden_tag() }}
+            {{ form.select.label }}<br>
+            <div>
+                {{ form.select(class = 'formbody') }}
+                {{ form.submit(class="button") }}
+            </div>
         </form>
+        <!--select?-->
     </div>
 </body>
 
