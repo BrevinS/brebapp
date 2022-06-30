@@ -14,7 +14,14 @@
                 {{ table|safe }}
             {% endfor %}
         </div>
-
+        <form action="" method="post">
+            {{ form.hidden_tag() }}
+            {{ form.nclusters.label }}<br>
+            <div>
+                {{ form.nclusters(class = 'formbody') }}
+                {{ form.submit(class="button") }}
+            </div>
+        </form>
     </div>
 </body>
 
