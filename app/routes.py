@@ -1,8 +1,8 @@
 from flask import render_template, flash, redirect, url_for, request
 from app import app, db
 from flask_sqlalchemy import sqlalchemy
-from app.forms import RegisterForm, LoginForm
-from app.models import User, Dataframe, Feature,Tag
+from app.forms import RegisterForm, LoginForm, MLForm
+from app.models import User, Dataframe, Feature, Tag
 from flask_login import current_user, login_user, logout_user, login_required
 import pandas as pd
 import sqlite3
@@ -137,10 +137,10 @@ def returnfeatures(df):
     return featurelist, identlist
 
 # Submit unsupervised dataset
-@app.route('/unsupervised/<dataframe_id>', methods=['GET'])
+@app.route('/unsupervised/<dataframe_id>', methods=['GET', 'POST'])
 def unsupervised(dataframe_id):
     dataf = Dataframe.query.get(dataframe_id)
-    
+    select = 0
     featurelist, identlist = returnfeatures(dataf)
 
     print('Feature list {}'.format(featurelist))
@@ -156,10 +156,32 @@ def unsupervised(dataframe_id):
     conn = sqlite3.connect('dataframe.db')
     c = conn.cursor()
     df = pd.read_sql('SELECT {} FROM dataframe'.format(querylang), conn)
+    df.to_sql('dataframe', conn, if_exists='replace', index = False)
+    conn.commit()
+    conn.close()
+
     ac = df.columns.values
 
+    form = MLForm()
+    if form.validate_on_submit():
+        # select is the corresponding integer
+        select = form.select.data
+        print('FIRST TEXT {}'.format(select))
+        # Must be Typecasted
+        if (int(select) == 1):
+            return redirect(url_for('kmeans', dataframe_id=dataframe_id))
+        elif (int(select) == 2):
+            pass
+            #return redirect(url_for('pca', dataframe_id=dataframe_id))
+        elif (int(select) == 3):
+            pass
+            #return redirect(url_for('hcluster', dataframe_id=dataframe_id))
+        else:
+            pass
+
     return render_template('unsupervised.html', featlist=featurelist, identlist=identlist, 
-                tables=[df.to_html(classes='data', header="true")], columns=ac)
+                tables=[df.to_html(classes='data', header="true")], columns=ac,
+                choice=select, form=form)
 
 @app.route('/unsuperanalysis/<dataframe_id>', methods=['GET', 'POST'])
 def unsuperanalysis(dataframe_id):
@@ -168,11 +190,28 @@ def unsuperanalysis(dataframe_id):
     featurelist, identlist = returnfeatures(dataf)
 
     if request.method == 'POST':
-        alg = request.form.get("algorithm")
+        alg = request.values.get("algorithm")
         print('Algorithm is {}'.format(alg))
     
     return render_template('unsuperanalysis.html', dataframe_id=dataframe_id)
 
+# KMEANS template. Show something relevant
+@app.route('/kmeans/<dataframe_id>', methods=['GET', 'POST'])
+def kmeans(dataframe_id):
+    dataf = Dataframe.query.get(dataframe_id)
+
+    featurelist, identlist = returnfeatures(dataf)
+
+    conn = sqlite3.connect('dataframe.db')
+    c = conn.cursor()
+    df = pd.read_sql('select * from dataframe', conn)
+    print(df)
+
+    ac = df.columns.values
+
+    return render_template('kmeans.html', columns=ac,
+                tables=[df.to_html(classes='data', header="true")])
+    
 
 @app.route('/dataframeview/<dataframe_id>', methods=['GET'])
 def dataframeview(dataframe_id):

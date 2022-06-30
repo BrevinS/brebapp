@@ -31,4 +31,10 @@ class LoginForm(FlaskForm):
 
 def get_tag():
     return Tag.query
+
+class MLForm(FlaskForm):
+    select = SelectField('Algorithm', choices = [(1, 'Kmeans Clustering'), (2, 'Principle Component Analysis'), 
+            (3, 'Hierarchical Clustering')])
+    submit = SubmitField('Calculate')
+
     
