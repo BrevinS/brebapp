@@ -1,11 +1,12 @@
 from flask import render_template, flash, redirect, url_for, request
 from app import app, db
 from flask_sqlalchemy import sqlalchemy
-from app.forms import RegisterForm, LoginForm, MLForm
+from app.forms import RegisterForm, LoginForm, MLForm, KMeanForm
 from app.models import User, Dataframe, Feature, Tag
 from flask_login import current_user, login_user, logout_user, login_required
 import pandas as pd
 import sqlite3
+from sklearn.cluster import KMeans
 
 @app.before_first_request
 def initDB(*args, **kwargs):
@@ -183,18 +184,6 @@ def unsupervised(dataframe_id):
                 tables=[df.to_html(classes='data', header="true")], columns=ac,
                 choice=select, form=form)
 
-@app.route('/unsuperanalysis/<dataframe_id>', methods=['GET', 'POST'])
-def unsuperanalysis(dataframe_id):
-    dataf = Dataframe.query.get(dataframe_id)
-
-    featurelist, identlist = returnfeatures(dataf)
-
-    if request.method == 'POST':
-        alg = request.values.get("algorithm")
-        print('Algorithm is {}'.format(alg))
-    
-    return render_template('unsuperanalysis.html', dataframe_id=dataframe_id)
-
 # KMEANS template. Show something relevant
 @app.route('/kmeans/<dataframe_id>', methods=['GET', 'POST'])
 def kmeans(dataframe_id):
@@ -205,12 +194,20 @@ def kmeans(dataframe_id):
     conn = sqlite3.connect('dataframe.db')
     c = conn.cursor()
     df = pd.read_sql('select * from dataframe', conn)
-    print(df)
-
     ac = df.columns.values
 
-    return render_template('kmeans.html', columns=ac,
-                tables=[df.to_html(classes='data', header="true")])
+    # What more do we want? # of clusters?
+    form = KMeanForm()
+    n = 0
+    if form.validate_on_submit():
+        n = form.nclusters.data
+        model = KMeans(n_clusters=int(n))
+        flash('Number of Clusters!'.format(int(n)))
+        
+
+
+    return render_template('kmeans.html', columns=ac, nclusters=n, 
+                tables=[df.to_html(classes='data', header="true")], form=form)
     
 
 @app.route('/dataframeview/<dataframe_id>', methods=['GET'])
@@ -266,3 +263,20 @@ def addidentifier(column_name, dataframe_id):
     db.session.commit()
 
     return redirect(url_for('dataframeview', dataframe_id=dataframe.id))
+
+
+
+
+
+
+@app.route('/unsuperanalysis/<dataframe_id>', methods=['GET', 'POST'])
+def unsuperanalysis(dataframe_id):
+    dataf = Dataframe.query.get(dataframe_id)
+
+    featurelist, identlist = returnfeatures(dataf)
+
+    if request.method == 'POST':
+        alg = request.values.get("algorithm")
+        print('Algorithm is {}'.format(alg))
+    
+    return render_template('unsuperanalysis.html', dataframe_id=dataframe_id)

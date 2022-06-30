@@ -37,4 +37,9 @@ class MLForm(FlaskForm):
             (3, 'Hierarchical Clustering')])
     submit = SubmitField('Calculate')
 
+class KMeanForm(FlaskForm):
+    nclusters = SelectField('# Clusters', choices = [(2, '2'), (3, '3'), 
+            (4, '4'), (5, '5'), (6, '6')])
+    submit = SubmitField('Calculate')
+
     
