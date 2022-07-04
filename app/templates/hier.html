@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .content {
+      max-width: 800px;
+      margin: auto;
+    }
+</style> 
+<body>
+    <div class="content">
+        <h1>
+            Hierarchical Clustering
+        </h1>
+        <br>
+        <!--Must pass in tables!-->
+        <div class="content_section content" id="" style="overflow:scroll; height:400px; outline-style: solid; outline-color: black;">
+            {% for table in tables %}
+                {{ columns[loop.index] }}
+                {{ table|safe }}
+            {% endfor %}
+        </div>
+        <form action="" method="post">
+            {{ form.hidden_tag() }}
+            {{ form.nclusters.label }}<br>
+            <div>
+                {{ form.nclusters(class = 'formbody') }}
+                {{ form.submit(class="button") }}
+            </div>
+        </form>
+        <!--Show clusters-->
+        {% if clusterc|length > 1 %}
+            {{ clusterc }}
+        {% endif %}
+    </div>
+</body>
+
+
+{% endblock %}
