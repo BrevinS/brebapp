@@ -28,7 +28,13 @@
                 {{ form.submit(class="button") }}
             </div>
         </form>
-        <img src='../static/foo.png'>
+        <!--Show clusters-->
+        {% if clusterc|length > 1 %}
+            {{ clusterc }}
+        {% endif %}
+        <!--
+            <img src='../static/foo.png'>
+        -->
     </div>
 </body>
 
