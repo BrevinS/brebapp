@@ -1,12 +1,12 @@
 from flask import render_template, flash, redirect, url_for, request
-from app import app, db
 from flask_sqlalchemy import sqlalchemy
+from app import app, db
 from app.forms import RegisterForm, LoginForm, MLForm, KMeanForm
 from app.models import User, Dataframe, Feature, Tag
 from flask_login import current_user, login_user, logout_user, login_required
 import pandas as pd
 import sqlite3
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans, AgglomerativeClustering
 from sklearn.decomposition import PCA  
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
@@ -178,8 +178,7 @@ def unsupervised(dataframe_id):
             pass
             #return redirect(url_for('pca', dataframe_id=dataframe_id))
         elif (int(select) == 3):
-            pass
-            #return redirect(url_for('hcluster', dataframe_id=dataframe_id))
+            return redirect(url_for('hier', dataframe_id=dataframe_id))
         else:
             pass
 
@@ -187,7 +186,49 @@ def unsupervised(dataframe_id):
                 tables=[df.to_html(classes='data', header="true")], columns=ac,
                 choice=select, form=form)
 
+@app.route('/hier/<dataframe_id>', methods=['GET', 'POST'])
+def hier(dataframe_id):
+    dataf = Dataframe.query.get(dataframe_id)
+
+    featurelist, identlist = returnfeatures(dataf)
+
+    conn = sqlite3.connect('dataframe.db')
+    c = conn.cursor()
+    df = pd.read_sql('select * from dataframe', conn)
+    ac = df.columns.values
+
+    form = KMeanForm()
+    n = 0
+    clustercenters = []
+    if request.method == 'POST' and form.validate_on_submit():
+        n = form.nclusters.data
+        # EUCLIDEAN OR NOT?
+        model = AgglomerativeClustering(n_clusters=5, affinity='euclidean', linkage='ward')
+        X = df.loc[:, df.columns != '{}'.format(identlist[0])]
+        pltcolors = ['red', 'blue', 'green', 'purple', 'orange']
+        try:
+            X = StandardScaler().fit_transform(X)
+            pca = PCA(n_components = int(len(featurelist)))
+            X = pca.fit_transform(X)
+            X = pd.DataFrame(X)
+            model.fit(X.iloc[:,:2])
+            labels = model.labels_
+            print(labels)
+            X = X.iloc[:,:2]
+            plt.scatter(X[0], X[1], c=labels, cmap='rainbow')
+            plt.savefig('hier_pic.png')
+            #for x in n:
+            #    print('plt color {}'.format(pltcolors[int(x)]))
+            #    plt.scatter(X[labels==int(x), 0], X[labels==int(x), 1], s=50, marker='o', color=pltcolors[int(x)])
+            #    plt.show()
+        except ValueError:
+            flash('Features must contain ordinal values i.e. "1", "2", etc...')
+
+    return render_template('hier.html', columns=ac, nclusters=n, clusterc=clustercenters, 
+                tables=[df.to_html(classes='data', header="true")], form=form)
+
 # KMEANS template. Show something relevant
+# STILL NEEDS: Graph, Elbow #Clusters recommendation, plt.scatter sucks
 @app.route('/kmeans/<dataframe_id>', methods=['GET', 'POST'])
 def kmeans(dataframe_id):
     dataf = Dataframe.query.get(dataframe_id)
@@ -220,22 +261,9 @@ def kmeans(dataframe_id):
             clustercenters = model.cluster_centers_
             labels = model.predict(X.iloc[:,:2])
             #plt.scatter(X[0], X[1], c=labels, cmap='rainbow')
-            #plt.savefig('foo.png')
+            #plt.savefig('kmean_pic.png')
         except ValueError:
             flash('Features must contain ordinal values i.e. "1", "2", etc...')
-
-        #labels = model.predict(X.iloc[:,:2])
-        #plt.scatter(X[0], X[1], c=labels, cmap='rainbow')
-        #plt.savefig('foo.png')
-        #plt.xlabel('PCA 1')
-        #plt.ylabel('PCA 2')
-        #plt.show()
-        #labels = model.predict(PCA_components.iloc[:,:2])
-        #plt.scatter(PCA_components[0], PCA_components[1], c=labels, cmap='viridis')
-        #plt.xlabel('PCA 1')
-        #plt.ylabel('PCA 2')
-        #print('Attempting to save juice')
-
 
     return render_template('kmeans.html', columns=ac, nclusters=n, clusterc=clustercenters, 
                 tables=[df.to_html(classes='data', header="true")], form=form)
@@ -299,7 +327,7 @@ def addidentifier(column_name, dataframe_id):
 
 
 
-
+# USELESS 
 @app.route('/unsuperanalysis/<dataframe_id>', methods=['GET', 'POST'])
 def unsuperanalysis(dataframe_id):
     dataf = Dataframe.query.get(dataframe_id)
