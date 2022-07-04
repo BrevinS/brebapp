@@ -202,25 +202,27 @@ def kmeans(dataframe_id):
     # What more do we want? # of clusters?
     form = KMeanForm()
     n = 0
+    clustercenters = []
     if request.method == 'POST' and form.validate_on_submit():
         n = form.nclusters.data
         model = KMeans(n_clusters=int(n))
         #flash('Number of Clusters! {}'.format(int(n)))
         print('Identity {}'.format(identlist))
         X = df.loc[:, df.columns != '{}'.format(identlist[0])]
-        X = StandardScaler().fit_transform(X)
-        pca = PCA(n_components = int(len(featurelist)))
-        if ValueError:
-            flash('Features must contain ordinal values i.e. "1", "2", etc...')
-        else:
+        try:
+            X = StandardScaler().fit_transform(X)
+            pca = PCA(n_components = int(len(featurelist)))
             X = pca.fit_transform(X)
             X = pd.DataFrame(X)
             model.fit(X.iloc[:,:2])
             print('CLUSTER CENTERS')
             print(model.cluster_centers_)
+            clustercenters = model.cluster_centers_
             labels = model.predict(X.iloc[:,:2])
-            plt.scatter(X[0], X[1], c=labels, cmap='rainbow')
-            plt.savefig('foo.png')
+            #plt.scatter(X[0], X[1], c=labels, cmap='rainbow')
+            #plt.savefig('foo.png')
+        except ValueError:
+            flash('Features must contain ordinal values i.e. "1", "2", etc...')
 
         #labels = model.predict(X.iloc[:,:2])
         #plt.scatter(X[0], X[1], c=labels, cmap='rainbow')
@@ -235,7 +237,7 @@ def kmeans(dataframe_id):
         #print('Attempting to save juice')
 
 
-    return render_template('kmeans.html', columns=ac, nclusters=n, 
+    return render_template('kmeans.html', columns=ac, nclusters=n, clusterc=clustercenters, 
                 tables=[df.to_html(classes='data', header="true")], form=form)
     
 
