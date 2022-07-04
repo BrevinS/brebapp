@@ -215,12 +215,8 @@ def hier(dataframe_id):
             labels = model.labels_
             print(labels)
             X = X.iloc[:,:2]
-            plt.scatter(X[0], X[1], c=labels, cmap='rainbow')
-            plt.savefig('hier_pic.png')
-            #for x in n:
-            #    print('plt color {}'.format(pltcolors[int(x)]))
-            #    plt.scatter(X[labels==int(x), 0], X[labels==int(x), 1], s=50, marker='o', color=pltcolors[int(x)])
-            #    plt.show()
+            #plt.scatter(X[0], X[1], c=labels, cmap='rainbow')
+            #plt.savefig('hier_pic.png')
         except ValueError:
             flash('Features must contain ordinal values i.e. "1", "2", etc...')
 
