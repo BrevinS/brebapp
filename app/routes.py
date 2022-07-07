@@ -10,6 +10,7 @@ from sklearn.cluster import KMeans, AgglomerativeClustering
 from sklearn.decomposition import PCA  
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
+import uuid
 
 @app.before_first_request
 def initDB(*args, **kwargs):
@@ -93,7 +94,7 @@ def homepage():
             conn.close()
 
             # Initialize Dataframe
-            d = Dataframe(identifier="nothing", target="alsonothing")
+            d = Dataframe(identifier=str(uuid.uuid4()), target=str(uuid.uuid4()))
             
             # Add all columns as featues (Tags must be used)
             for col in cf.columns:
@@ -149,7 +150,7 @@ def unsupervised(dataframe_id):
     dataf = Dataframe.query.get(dataframe_id)
     select = 0
     featurelist, identlist, targetlist = returnfeatures(dataf)
-    
+
     print('Feature list {}'.format(featurelist))
     print('Identifier Vector {}'.format(identlist))
     print('Target list {}'.format(targetlist))
