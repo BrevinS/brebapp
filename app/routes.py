@@ -269,11 +269,17 @@ def kmeans(dataframe_id):
     return render_template('kmeans.html', columns=ac, nclusters=n, clusterc=clustercenters, 
                 tables=[df.to_html(classes='data', header="true")], form=form)
 
-@app.route('/dataframeview/<dataframe_id>', methods=['GET'])
+@app.route('/dataframeview/<dataframe_id>', methods=['GET', 'POST'])
 def dataframeview(dataframe_id):
     conn = sqlite3.connect('dataframe.db')
     c = conn.cursor()
     df = pd.read_sql('select * from dataframe', conn)
+    option = 0
+    if request.method == 'POST':
+        option = request.values.get("option")
+        print('Option was {}'.format(str(option)))
+        if option is not None:
+            option = int(option)
 
     # To reference in _features.html loop in dataframeview.html
     dataf = Dataframe.query.get(dataframe_id)
@@ -283,7 +289,8 @@ def dataframeview(dataframe_id):
     
     feats, idents, targs = returnfeatures(dataf)
 
-    return render_template('dataframeview.html', tables=[df.to_html(classes='data', header="true")],
+    return render_template('dataframeview.html', option=option, 
+                tables=[df.to_html(classes='data', header="true")],
                 columns=ac, dataframe=dataf, dataframe_id=dataframe_id,
                 featlist=feats, identlist=idents, targlist=targs, shape=df.shape)
 
@@ -317,8 +324,8 @@ def addidentifier(column_name, dataframe_id):
                 feat.tags.remove(r)    
             print('Added identifier - name: {} tag name: {}'.format(feat.feature_name, t.name))
             feat.tags.append(t)
-            dataframe.identifier = column_name
-            print("New dataframe.identifier {}".format(dataframe.identifier))
+            #dataframe.identifier = column_name
+            #print("New dataframe.identifier {}".format(dataframe.identifier))
     db.session.commit()
 
     return redirect(url_for('dataframeview', dataframe_id=dataframe.id))

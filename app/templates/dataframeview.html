@@ -23,19 +23,34 @@
     </style>
     <body>
         <div class="content">
+            <div>
+                <form action="{{ url_for('dataframeview', dataframe_id=dataframe_id) }}" method="post">
+                    <label><input type="radio" name="1" value="unsupervised">Unsupervised Learning</label>
+                    <label><input type="radio" name="2" value="supervised">Supervised Learning</label>
+                    <button type="submit">Select</button>
+                </form>
+            </div>
+            <!--UNSUPERVISED-->
+            {% if option == 1 %}
+                <div style="overflow:scroll; height:400px; outline-style: solid;">
+                    {% for column in columns %}
+                        <div class="column">
+                            {% with data=dataframe_id, featurelist=featlist, identitylist=identlist, targetlist=targlist %}
+                                {% include '_features.html' %}
+                                <br>
+                            {% endwith %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!--SUPERVISED-->
+            {% if option == 2 %}
+
+            {% endif %}
+
             Dataframe Columns (Identify one "Identifier" column and any number of "Feature" columns)
             <br>
-            
-            <div style="overflow:scroll; height:400px; outline-style: solid;">
-                {% for column in columns %}
-                    <div class="column">
-                        {% with data=dataframe_id, featurelist=featlist, identitylist=identlist, targetlist=targlist %}
-                            {% include '_features.html' %}
-                            <br>
-                        {% endwith %}
-                    </div>
-                {% endfor %}
-            </div>
             <br>
             <button onclick="toggle_display()">Hide/Show Dataset</button>
             Shape is: {{ shape }}
