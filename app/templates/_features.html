@@ -15,6 +15,12 @@
                 Selected: Identifier
             {% endif %}
         {% endfor %}
+
+        {% for target in targetlist %}
+            {% if column == target %}
+                Selected: Target
+            {% endif %}
+        {% endfor %}
     </td>
 
     <td style="width: 120px">
@@ -26,6 +32,11 @@
         <form action="{{ url_for('addfeature', column_name=column, dataframe_id=data) }}" method="post" style="text-align:right">
             <input type="submit" value=" Feature " name="Feat" style="width: 72px">
         </form>
+        
+        <form action="{{ url_for('addtarget', column_name=column, dataframe_id=data) }}" method="post" style="text-align:right">
+            <input type="submit" value=" Target " name="Feat" style="width: 72px">
+        </form>
+
     </td>
 
     <td style="padding-right: 45px;">
