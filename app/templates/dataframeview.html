@@ -25,13 +25,29 @@
         <div class="content">
             <div>
                 <form action="{{ url_for('dataframeview', dataframe_id=dataframe_id) }}" method="post">
-                    <label><input type="radio" name="1" value="unsupervised">Unsupervised Learning</label>
-                    <label><input type="radio" name="2" value="supervised">Supervised Learning</label>
+                    <label><input type="radio" name="option" value="1">Unsupervised Learning</label>
+                    <label><input type="radio" name="option" value="2">Supervised Learning</label>
                     <button type="submit">Select</button>
                 </form>
             </div>
             <!--UNSUPERVISED-->
             {% if option == 1 %}
+                Dataframe Columns (Identify one "Identifier" column and any number of "Feature" columns)
+                <div style="overflow:scroll; height:400px; outline-style: solid;">
+                    {% for column in columns %}
+                        <div class="column">
+                            {% with data=dataframe_id, op_feat=option, featurelist=featlist, identitylist=identlist, targetlist=targlist %}
+                                {% include '_features.html' %}
+                                <br>
+                            {% endwith %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!--SUPERVISED-->
+            {% if option == 2 %}
+                Dataframe Columns (Identify one "Identifier" and one "Target" column and any number of "Feature" columns)
                 <div style="overflow:scroll; height:400px; outline-style: solid;">
                     {% for column in columns %}
                         <div class="column">
@@ -43,27 +59,34 @@
                     {% endfor %}
                 </div>
             {% endif %}
-
-            <!--SUPERVISED-->
-            {% if option == 2 %}
-
+            <br>
+            Shape is: {{ shape }}
+            {% if option == 1 %}
+                {% if (featlist|length) >= 2 %}
+                    {% if (identlist|length) == 1 %}
+                        <!--WE HAVE ACCESS TO FEATLIST, IDENTLIST, and MORE-->
+                        <form action="{{ url_for('unsupervised', dataframe_id=dataframe_id, featurelist=featlist, identitylist=identlist, 
+                                        table=tables) }}">
+                            <button style="float: right;">Submit</button>
+                        </form>
+                    {% endif %}
+                {% endif %}
             {% endif %}
 
-            Dataframe Columns (Identify one "Identifier" column and any number of "Feature" columns)
-            <br>
+            {% if option == 2 %}
+                {% if (featlist|length) >= 2 %}
+                    {% if (identlist|length) == 1 and (targlist|length) == 1 %}
+                        <!--WE HAVE ACCESS TO FEATLIST, IDENTLIST, and MORE-->
+                        <form action="{{ url_for('unsupervised', dataframe_id=dataframe_id, featurelist=featlist, identitylist=identlist, 
+                                        table=tables) }}">
+                            <button style="float: right;">Submit</button>
+                        </form>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+
             <br>
             <button onclick="toggle_display()">Hide/Show Dataset</button>
-            Shape is: {{ shape }}
-            {% if (featlist|length) >= 2 %}
-                {% if (identlist|length) == 1 %}
-                    <!--WE HAVE ACCESS TO FEATLIST, IDENTLIST, and MORE-->
-                    <form action="{{ url_for('unsupervised', dataframe_id=dataframe_id, featurelist=featlist, identitylist=identlist, 
-                                    table=tables) }}">
-                        <button style="float: right;">Submit</button>
-                    </form>
-                    {% endif %}
-            {% endif %}
-            <br>
         </div>
         <br>
             <div class="content_section content" id="" style="overflow:scroll; height:400px; outline-style: solid; outline-color: black;">
