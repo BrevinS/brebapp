@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 def initDB(*args, **kwargs):
     db.create_all()
     if Tag.query.count() == 0:
-        tags = ['Identifier', 'Feature']
+        tags = ['Target', 'Identifier', 'Feature']
         for t in tags:
             db.session.add(Tag(name=t))
         db.session.commit()
@@ -93,7 +93,7 @@ def homepage():
             conn.close()
 
             # Initialize Dataframe
-            d = Dataframe(identifier="nothing")
+            d = Dataframe(identifier="nothing", target="alsonothing")
             
             # Add all columns as featues (Tags must be used)
             for col in cf.columns:
@@ -131,24 +131,28 @@ def sqlite3string(headers):
 def returnfeatures(df):
     featurelist = []
     identlist = [] 
+    targetlist = []
     for feat in df.features:
         for t in feat.tags:
             if t.name == 'Feature':
                 featurelist.append(feat.feature_name)
-            if t.name == 'Identifier':
+            elif t.name == 'Identifier':
                 identlist.append(feat.feature_name)
+            elif t.name == 'Target':
+                targetlist.append(feat.feature_name)
     
-    return featurelist, identlist
+    return featurelist, identlist, targetlist
 
 # Submit unsupervised dataset
 @app.route('/unsupervised/<dataframe_id>', methods=['GET', 'POST'])
 def unsupervised(dataframe_id):
     dataf = Dataframe.query.get(dataframe_id)
     select = 0
-    featurelist, identlist = returnfeatures(dataf)
-
+    featurelist, identlist, targetlist = returnfeatures(dataf)
+    
     print('Feature list {}'.format(featurelist))
     print('Identifier Vector {}'.format(identlist))
+    print('Target list {}'.format(targetlist))
 
     # Put Features after identifier vector
     full = identlist + featurelist
@@ -171,26 +175,23 @@ def unsupervised(dataframe_id):
         # select is the corresponding integer
         select = form.select.data
         print('FIRST TEXT {}'.format(select))
-        # Must be Typecasted
+        # Must be Typecasted 
         if (int(select) == 1):
             return redirect(url_for('kmeans', dataframe_id=dataframe_id))
         elif (int(select) == 2):
-            pass
-            #return redirect(url_for('pca', dataframe_id=dataframe_id))
-        elif (int(select) == 3):
             return redirect(url_for('hier', dataframe_id=dataframe_id))
         else:
             pass
 
     return render_template('unsupervised.html', featlist=featurelist, identlist=identlist, 
-                tables=[df.to_html(classes='data', header="true")], columns=ac,
-                choice=select, form=form)
+                targlist=targetlist, tables=[df.to_html(classes='data', header="true")], 
+                columns=ac, choice=select, form=form)
 
 @app.route('/hier/<dataframe_id>', methods=['GET', 'POST'])
 def hier(dataframe_id):
     dataf = Dataframe.query.get(dataframe_id)
 
-    featurelist, identlist = returnfeatures(dataf)
+    featurelist, identlist, targetlist = returnfeatures(dataf)
 
     conn = sqlite3.connect('dataframe.db')
     c = conn.cursor()
@@ -203,9 +204,8 @@ def hier(dataframe_id):
     if request.method == 'POST' and form.validate_on_submit():
         n = form.nclusters.data
         # EUCLIDEAN OR NOT?
-        model = AgglomerativeClustering(n_clusters=5, affinity='euclidean', linkage='ward')
+        model = AgglomerativeClustering(n_clusters=int(n), affinity='euclidean', linkage='ward')
         X = df.loc[:, df.columns != '{}'.format(identlist[0])]
-        pltcolors = ['red', 'blue', 'green', 'purple', 'orange']
         try:
             X = StandardScaler().fit_transform(X)
             pca = PCA(n_components = int(len(featurelist)))
@@ -213,7 +213,11 @@ def hier(dataframe_id):
             X = pd.DataFrame(X)
             model.fit(X.iloc[:,:2])
             labels = model.labels_
-            print(labels)
+
+            #for a in set(labels):
+            #    y = df[[labels]==a].mean(axis=0)
+            #    clustercenters.append(list(y[:-1]))
+            
             X = X.iloc[:,:2]
             #plt.scatter(X[0], X[1], c=labels, cmap='rainbow')
             #plt.savefig('hier_pic.png')
@@ -229,7 +233,7 @@ def hier(dataframe_id):
 def kmeans(dataframe_id):
     dataf = Dataframe.query.get(dataframe_id)
 
-    featurelist, identlist = returnfeatures(dataf)
+    featurelist, identlist, targetlist = returnfeatures(dataf)
 
     conn = sqlite3.connect('dataframe.db')
     c = conn.cursor()
@@ -263,7 +267,6 @@ def kmeans(dataframe_id):
 
     return render_template('kmeans.html', columns=ac, nclusters=n, clusterc=clustercenters, 
                 tables=[df.to_html(classes='data', header="true")], form=form)
-    
 
 @app.route('/dataframeview/<dataframe_id>', methods=['GET'])
 def dataframeview(dataframe_id):
@@ -277,11 +280,11 @@ def dataframeview(dataframe_id):
     idents = []
     ac = df.columns.values
     
-    feats, idents = returnfeatures(dataf)
+    feats, idents, targs = returnfeatures(dataf)
 
     return render_template('dataframeview.html', tables=[df.to_html(classes='data', header="true")],
                 columns=ac, dataframe=dataf, dataframe_id=dataframe_id,
-                featlist=feats, identlist=idents, shape=df.shape)
+                featlist=feats, identlist=idents, targlist=targs, shape=df.shape)
 
 # Add feature tag to given column in given dataframe
 @app.route('/addfeature/<column_name>/<dataframe_id>', methods=['POST'])
@@ -319,6 +322,26 @@ def addidentifier(column_name, dataframe_id):
 
     return redirect(url_for('dataframeview', dataframe_id=dataframe.id))
 
+# Add target vector tag to given column in given dataframe
+@app.route('/addtarget/<column_name>/<dataframe_id>', methods=['POST'])
+def addtarget(column_name, dataframe_id):
+    t = Tag(name="Target")
+    dataframe = Dataframe.query.get(dataframe_id)
+    for feat in dataframe.features:
+        # Reset all identifiers?
+        for f in feat.tags:
+            if f.name == 'Target':
+                feat.tags.remove(f)
+        if column_name == feat.feature_name:
+            for r in feat.tags:
+                feat.tags.remove(r)    
+            print('Added identifier - name: {} tag name: {}'.format(feat.feature_name, t.name))
+            feat.tags.append(t)
+            dataframe.target = column_name
+            print("New dataframe.identifier {}".format(dataframe.target))
+    db.session.commit()
+
+    return redirect(url_for('dataframeview', dataframe_id=dataframe.id))
 
 
 

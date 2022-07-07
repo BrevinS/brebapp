@@ -32,6 +32,8 @@ class Dataframe(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     # unique identifer for Dataframe (can be changed in new session)
     identifier = db.Column(db.String(100), unique=True)
+    # target vector
+    target = db.Column(db.String(100), unique=True)
     # many features (one-to-many relationship)
     features = db.relationship('Feature', backref='Dataframe', uselist=True)
 

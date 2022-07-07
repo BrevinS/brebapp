@@ -29,7 +29,7 @@
             <div style="overflow:scroll; height:400px; outline-style: solid;">
                 {% for column in columns %}
                     <div class="column">
-                        {% with data=dataframe_id, featurelist=featlist, identitylist=identlist %}
+                        {% with data=dataframe_id, featurelist=featlist, identitylist=identlist, targetlist=targlist %}
                             {% include '_features.html' %}
                             <br>
                         {% endwith %}
