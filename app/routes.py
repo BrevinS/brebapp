@@ -274,12 +274,11 @@ def dataframeview(dataframe_id):
     conn = sqlite3.connect('dataframe.db')
     c = conn.cursor()
     df = pd.read_sql('select * from dataframe', conn)
-    option = 0
     if request.method == 'POST':
         option = request.values.get("option")
         print('Option was {}'.format(str(option)))
-        if option is not None:
-            option = int(option)
+        #if option is not None:
+        option = int(option)
 
     # To reference in _features.html loop in dataframeview.html
     dataf = Dataframe.query.get(dataframe_id)
