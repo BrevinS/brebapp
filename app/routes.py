@@ -105,7 +105,7 @@ def homepage():
             db.session.add(d)
             db.session.commit()
 
-            return redirect(url_for('dataframeview', dataframe_id=d.id))
+            return redirect(url_for('dataframeview', dataframe_id=d.id, option=0))
         else:
             flash('FILE MUST BE OF TYPE .csv')
     return render_template('homepage.html')
@@ -269,33 +269,36 @@ def kmeans(dataframe_id):
     return render_template('kmeans.html', columns=ac, nclusters=n, clusterc=clustercenters, 
                 tables=[df.to_html(classes='data', header="true")], form=form)
 
-@app.route('/dataframeview/<dataframe_id>', methods=['GET', 'POST'])
-def dataframeview(dataframe_id):
+@app.route('/dataframeview/<dataframe_id>/<option>', methods=['GET', 'POST'])
+def dataframeview(dataframe_id, option):
     conn = sqlite3.connect('dataframe.db')
     c = conn.cursor()
     df = pd.read_sql('select * from dataframe', conn)
+    
     if request.method == 'POST':
         option = request.values.get("option")
         print('Option was {}'.format(str(option)))
-        #if option is not None:
-        option = int(option)
+        if option is not None:
+            print('BIG TEST')
+            option = int(option)
 
     # To reference in _features.html loop in dataframeview.html
     dataf = Dataframe.query.get(dataframe_id)
-    feats = []
+    feats = [] 
     idents = []
     ac = df.columns.values
     
     feats, idents, targs = returnfeatures(dataf)
 
-    return render_template('dataframeview.html', option=option, 
+    print('TESTER 902')
+    return render_template('dataframeview.html', option=int(option), 
                 tables=[df.to_html(classes='data', header="true")],
                 columns=ac, dataframe=dataf, dataframe_id=dataframe_id,
                 featlist=feats, identlist=idents, targlist=targs, shape=df.shape)
 
 # Add feature tag to given column in given dataframe
-@app.route('/addfeature/<column_name>/<dataframe_id>', methods=['POST'])
-def addfeature(column_name, dataframe_id):
+@app.route('/addfeature/<column_name>/<dataframe_id>/<option>', methods=['POST'])
+def addfeature(column_name, dataframe_id, option):
     t = Tag(name="Feature")
     dataframe = Dataframe.query.get(dataframe_id)
     for feat in dataframe.features:
@@ -306,11 +309,11 @@ def addfeature(column_name, dataframe_id):
             feat.tags.append(t)
     db.session.commit()
 
-    return redirect(url_for('dataframeview', dataframe_id=dataframe.id))
+    return redirect(url_for('dataframeview', dataframe_id=dataframe.id, option=option))
 
 # Add identifier tag to given column in given dataframe
-@app.route('/addidentifier/<column_name>/<dataframe_id>', methods=['POST'])
-def addidentifier(column_name, dataframe_id):
+@app.route('/addidentifier/<column_name>/<dataframe_id>/<option>', methods=['POST'])
+def addidentifier(column_name, dataframe_id, option):
     t = Tag(name="Identifier")
     dataframe = Dataframe.query.get(dataframe_id)
     for feat in dataframe.features:
@@ -327,11 +330,11 @@ def addidentifier(column_name, dataframe_id):
             #print("New dataframe.identifier {}".format(dataframe.identifier))
     db.session.commit()
 
-    return redirect(url_for('dataframeview', dataframe_id=dataframe.id))
+    return redirect(url_for('dataframeview', dataframe_id=dataframe.id, option=option))
 
 # Add target vector tag to given column in given dataframe
-@app.route('/addtarget/<column_name>/<dataframe_id>', methods=['POST'])
-def addtarget(column_name, dataframe_id):
+@app.route('/addtarget/<column_name>/<dataframe_id>//<option>', methods=['POST'])
+def addtarget(column_name, dataframe_id, option):
     t = Tag(name="Target")
     dataframe = Dataframe.query.get(dataframe_id)
     for feat in dataframe.features:
@@ -348,7 +351,7 @@ def addtarget(column_name, dataframe_id):
             print("New dataframe.identifier {}".format(dataframe.target))
     db.session.commit()
 
-    return redirect(url_for('dataframeview', dataframe_id=dataframe.id))
+    return redirect(url_for('dataframeview', dataframe_id=dataframe.id, option=option))
 
 
 
