@@ -25,17 +25,19 @@
 
     <td style="width: 120px">
         <!--One form for the Identifier and another form with different route for Feature-->
-        <form action="{{ url_for('addidentifier', column_name=column, dataframe_id=data) }}" method="post" style="text-align:right">
+        <form action="{{ url_for('addidentifier', column_name=column, dataframe_id=data, option=option) }}" method="post" style="text-align:right">
             <input type="submit" value="Identifier" name="Identify" style="width: 72px">
         </form>
     
-        <form action="{{ url_for('addfeature', column_name=column, dataframe_id=data) }}" method="post" style="text-align:right">
+        <form action="{{ url_for('addfeature', column_name=column, dataframe_id=data, option=option) }}" method="post" style="text-align:right">
             <input type="submit" value=" Feature " name="Feat" style="width: 72px">
         </form>
         
-        <form action="{{ url_for('addtarget', column_name=column, dataframe_id=data) }}" method="post" style="text-align:right">
-            <input type="submit" value=" Target " name="Feat" style="width: 72px">
-        </form>
+        {% if option == 2 %}
+            <form action="{{ url_for('addtarget', column_name=column, dataframe_id=data, option=option) }}" method="post" style="text-align:right">
+                <input type="submit" value=" Target " name="Feat" style="width: 72px">
+            </form>
+        {% endif %}
     </td>
 
     <td style="padding-right: 45px;">

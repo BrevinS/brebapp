@@ -23,20 +23,22 @@
     </style>
     <body>
         <div class="content">
-            <div>
-                <form action="{{ url_for('dataframeview', dataframe_id=dataframe_id) }}" method="post">
-                    <label><input type="radio" name="option" value="1">Unsupervised Learning</label>
-                    <label><input type="radio" name="option" value="2">Supervised Learning</label>
-                    <button type="submit">Select</button>
-                </form>
-            </div>
+            {% if option == 0 %}
+                <div>
+                    <form action="{{ url_for('dataframeview', dataframe_id=dataframe_id, option=option) }}" method="post">
+                        <label><input type="radio" name="option" value="1">Unsupervised Learning</label>
+                        <label><input type="radio" name="option" value="2">Supervised Learning</label>
+                        <button type="submit">Select</button>
+                    </form>
+                </div>
+            {% endif %}
             <!--UNSUPERVISED-->
             {% if option == 1 %}
                 Dataframe Columns (Identify one "Identifier" column and any number of "Feature" columns)
                 <div style="overflow:scroll; height:400px; outline-style: solid;">
                     {% for column in columns %}
                         <div class="column">
-                            {% with data=dataframe_id, op_feat=option, featurelist=featlist, identitylist=identlist, targetlist=targlist %}
+                            {% with data=dataframe_id, featurelist=featlist, identitylist=identlist, targetlist=targlist, opt=option %}
                                 {% include '_features.html' %}
                                 <br>
                             {% endwith %}
@@ -51,7 +53,7 @@
                 <div style="overflow:scroll; height:400px; outline-style: solid;">
                     {% for column in columns %}
                         <div class="column">
-                            {% with data=dataframe_id, featurelist=featlist, identitylist=identlist, targetlist=targlist %}
+                            {% with data=dataframe_id, featurelist=featlist, identitylist=identlist, targetlist=targlist, opt=option %}
                                 {% include '_features.html' %}
                                 <br>
                             {% endwith %}
