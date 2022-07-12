@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .content {
+      max-width: 800px;
+      margin: auto;
+    }
+</style> 
+<body>
+    <div class="content">
+        <h1>
+            K-Nearest-Neighbors Clustering
+        </h1>
+        <br>
+        <!--Must pass in tables!-->
+        <div class="content_section content" id="" style="overflow:scroll; height:400px; outline-style: solid; outline-color: black;">
+            {% for table in tables %}
+                {{ columns[loop.index] }}
+                {{ table|safe }}
+            {% endfor %}
+        </div>
+    </div>
+</body>
+
+
+{% endblock %}
