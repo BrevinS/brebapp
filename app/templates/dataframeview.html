@@ -32,6 +32,7 @@
                     </form>
                 </div>
             {% endif %}
+
             <!--UNSUPERVISED-->
             {% if option == 1 %}
                 Dataframe Columns (Identify one "Identifier" column and any number of "Feature" columns)
@@ -64,6 +65,7 @@
             <br>
             Shape is: {{ shape }}
             
+            <!--UNSUPERVISED-->
             {% if option == 1 %}
                 {% if (featlist|length) >= 2 %}
                     {% if (identlist|length) == 1 %}
@@ -75,13 +77,14 @@
                     {% endif %}
                 {% endif %}
             {% endif %}
-
+            
+            <!--SUPERVISED-->
             {% if option == 2 %}
                 {% if (featlist|length) >= 2 %}
                     {% if (identlist|length) == 1 and (targlist|length) == 1 %}
                         <!--WE HAVE ACCESS TO FEATLIST, IDENTLIST, and MORE-->
-                        <form action="{{ url_for('unsupervised', dataframe_id=dataframe_id, featurelist=featlist, identitylist=identlist, 
-                                        table=tables) }}">
+                        <form action="{{ url_for('supervised', dataframe_id=dataframe_id, featurelist=featlist, identitylist=identlist, 
+                                        targetlist=targlist, table=tables) }}">
                             <button style="float: right;">Submit</button>
                         </form>
                     {% endif %}

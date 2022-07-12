@@ -36,6 +36,10 @@ class MLForm(FlaskForm):
     select = SelectField('Algorithm', choices = [(1, 'Kmeans Clustering'), (2, 'Hierarchical Clustering')])
     submit = SubmitField('Calculate')
 
+class MLFormS(FlaskForm):
+    select = SelectField('Algorithm', choices = [(1, 'Neural Network'), (2, 'Other')])
+    submit = SubmitField('Calculate')
+
 class KMeanForm(FlaskForm):
     nclusters = SelectField('# Clusters', choices = [(2, '2'), (3, '3'), 
             (4, '4'), (5, '5'), (6, '6')])
