@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request
 from flask_sqlalchemy import sqlalchemy
 from app import app, db
-from app.forms import RegisterForm, LoginForm, MLForm, KMeanForm
+from app.forms import RegisterForm, LoginForm, MLForm, MLFormS, KMeanForm
 from app.models import User, Dataframe, Feature, Tag
 from flask_login import current_user, login_user, logout_user, login_required
 import pandas as pd
@@ -144,6 +144,51 @@ def returnfeatures(df):
     
     return featurelist, identlist, targetlist
 
+@app.route('/supervised/<dataframe_id>', methods=['GET', 'POST'])
+def supervised(dataframe_id):
+    dataf = Dataframe.query.get(dataframe_id)
+    select = 0
+    featurelist, identlist, targetlist = returnfeatures(dataf)
+
+    print('Feature list {}'.format(featurelist))
+    print('Identifier Vector {}'.format(identlist))
+    print('Target list {}'.format(targetlist))
+
+    # Put Features after identifier vector target at the end
+    full = identlist + featurelist + targetlist
+    
+    # Python list of headers to SQlite3 
+    querylang = sqlite3string(full)
+
+    # Now I need Query database.db for featurelist with identlist at the start
+    conn = sqlite3.connect('dataframe.db')
+    c = conn.cursor()
+    df = pd.read_sql('SELECT {} FROM dataframe'.format(querylang), conn)
+    df.to_sql('dataframe', conn, if_exists='replace', index = False)
+    conn.commit()
+    conn.close()
+
+    ac = df.columns.values
+
+    form = MLFormS()
+    if form.validate_on_submit():
+        # select is the corresponding integer
+        select = form.select.data
+        print('FIRST TEXT {}'.format(select))
+        # Must be Typecasted 
+        if (int(select) == 1):
+            #return redirect(url_for('kmeans', dataframe_id=dataframe_id))
+            pass
+        elif (int(select) == 2):
+            #return redirect(url_for('hier', dataframe_id=dataframe_id))
+            pass
+        else:
+            pass
+
+    return render_template('supervised.html', featlist=featurelist, identlist=identlist, 
+                targlist=targetlist, tables=[df.to_html(classes='data', header="true")], 
+                columns=ac, choice=select, form=form)
+
 # Submit unsupervised dataset
 @app.route('/unsupervised/<dataframe_id>', methods=['GET', 'POST'])
 def unsupervised(dataframe_id):
@@ -153,7 +198,6 @@ def unsupervised(dataframe_id):
 
     print('Feature list {}'.format(featurelist))
     print('Identifier Vector {}'.format(identlist))
-    print('Target list {}'.format(targetlist))
 
     # Put Features after identifier vector
     full = identlist + featurelist
@@ -290,7 +334,6 @@ def dataframeview(dataframe_id, option):
     
     feats, idents, targs = returnfeatures(dataf)
 
-    print('TESTER 902')
     return render_template('dataframeview.html', option=int(option), 
                 tables=[df.to_html(classes='data', header="true")],
                 columns=ac, dataframe=dataf, dataframe_id=dataframe_id,
@@ -347,8 +390,8 @@ def addtarget(column_name, dataframe_id, option):
                 feat.tags.remove(r)    
             print('Added identifier - name: {} tag name: {}'.format(feat.feature_name, t.name))
             feat.tags.append(t)
-            dataframe.target = column_name
-            print("New dataframe.identifier {}".format(dataframe.target))
+            #dataframe.target = column_name
+            #print("New dataframe.identifier {}".format(dataframe.target))
     db.session.commit()
 
     return redirect(url_for('dataframeview', dataframe_id=dataframe.id, option=option))

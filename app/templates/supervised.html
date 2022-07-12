@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<script>
+    function toggle_display(){
+        el = document.querySelector('.content_section');
+    
+        if(el.style.visibility == 'hidden'){
+            el.style.visibility = 'visible'
+        }else{
+            el.style.visibility = 'hidden'
+        }
+    }
+</script>
+<style>
+    .content {
+      max-width: 800px;
+      margin: auto;
+    }
+</style> 
+<body>
+    <div class="content">
+        <h1>
+            Supervised Training
+        </h1>
+
+        <br>
+        <!--Must pass in tables!-->
+        <div class="content_section content" id="" style="overflow:scroll; height:400px; outline-style: solid; outline-color: black;">
+            {% for table in tables %}
+                {{ columns[loop.index] }}
+                {{ table|safe }}
+            {% endfor %}
+        </div>
+        <br>
+        <form action="" method="post">
+            {{ form.hidden_tag() }}
+            {{ form.select.label }}<br>
+            <div>
+                {{ form.select(class = 'formbody') }}
+                {{ form.submit(class="button") }}
+            </div>
+        </form>
+        <!--select?-->
+    </div>
+</body>
+
+{% endblock %}
