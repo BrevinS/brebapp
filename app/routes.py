@@ -176,9 +176,8 @@ def supervised(dataframe_id):
         select = form.select.data
         print('FIRST TEXT {}'.format(select))
         # Must be Typecasted 
-        if (int(select) == 1):
-            #return redirect(url_for('kmeans', dataframe_id=dataframe_id))
-            pass
+        if (int(select) == 1): 
+            return redirect(url_for('knn', dataframe_id=dataframe_id))
         elif (int(select) == 2):
             #return redirect(url_for('hier', dataframe_id=dataframe_id))
             pass
@@ -188,6 +187,20 @@ def supervised(dataframe_id):
     return render_template('supervised.html', featlist=featurelist, identlist=identlist, 
                 targlist=targetlist, tables=[df.to_html(classes='data', header="true")], 
                 columns=ac, choice=select, form=form)
+
+@app.route('/knn/<dataframe_id>', methods=['GET', 'POST'])
+def knn(dataframe_id):
+    dataf = Dataframe.query.get(dataframe_id)
+
+    featurelist, identlist, targetlist = returnfeatures(dataf)
+
+    conn = sqlite3.connect('dataframe.db')
+    c = conn.cursor()
+    df = pd.read_sql('select * from dataframe', conn)
+    ac = df.columns.values
+
+    return render_template('knn.html', columns=ac, 
+            tables=[df.to_html(classes='data', header="true")])
 
 # Submit unsupervised dataset
 @app.route('/unsupervised/<dataframe_id>', methods=['GET', 'POST'])
