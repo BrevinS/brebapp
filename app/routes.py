@@ -353,18 +353,3 @@ def addtarget(column_name, dataframe_id, option):
 
     return redirect(url_for('dataframeview', dataframe_id=dataframe.id, option=option))
 
-
-
-
-# USELESS 
-@app.route('/unsuperanalysis/<dataframe_id>', methods=['GET', 'POST'])
-def unsuperanalysis(dataframe_id):
-    dataf = Dataframe.query.get(dataframe_id)
-
-    featurelist, identlist = returnfeatures(dataf)
-
-    if request.method == 'POST':
-        alg = request.values.get("algorithm")
-        print('Algorithm is {}'.format(alg))
-    
-    return render_template('unsuperanalysis.html', dataframe_id=dataframe_id)
