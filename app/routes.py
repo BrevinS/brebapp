@@ -9,6 +9,9 @@ import sqlite3
 from sklearn.cluster import KMeans, AgglomerativeClustering
 from sklearn.decomposition import PCA  
 from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report, confusion_matrix
 import matplotlib.pyplot as plt
 import uuid
 
@@ -197,7 +200,25 @@ def knn(dataframe_id):
     conn = sqlite3.connect('dataframe.db')
     c = conn.cursor()
     df = pd.read_sql('select * from dataframe', conn)
+    y = df.loc[:, df.columns == '{}'.format(targetlist[0])]
+    print('Target list {}'.format(y))
     ac = df.columns.values
+
+    X = df.loc[:, df.columns != '{}'.format(targetlist[0])]
+    print('KNN Dataset {}'.format(X))
+    X = StandardScaler().fit_transform(X)
+    X = pd.DataFrame(X)
+    
+    x_train, x_test, y_train, y_test = train_test_split(X, y, test_size = 0.2)
+    model = KNeighborsClassifier(n_neighbors = 1)
+
+    model.fit(x_train, y_train)
+
+    y_pred = model.predict(x_test)
+
+    print(classification_report(y_test, y_pred))
+    # I need a better dataset to got further... We can list the missfires and accuracies
+    # KNN will need a recommended number of neighbors based on error rate. 
 
     return render_template('knn.html', columns=ac, 
             tables=[df.to_html(classes='data', header="true")])
