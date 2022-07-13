@@ -5,13 +5,14 @@ from app.forms import RegisterForm, LoginForm, MLForm, MLFormS, KMeanForm
 from app.models import User, Dataframe, Feature, Tag
 from flask_login import current_user, login_user, logout_user, login_required
 import pandas as pd
+import numpy as np
 import sqlite3
 from sklearn.cluster import KMeans, AgglomerativeClustering
 from sklearn.decomposition import PCA  
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 import matplotlib.pyplot as plt
 import uuid
 
@@ -220,7 +221,9 @@ def knn(dataframe_id):
     # I need a better dataset to got further... We can list the missfires and accuracies
     # KNN will need a recommended number of neighbors based on error rate. 
 
-    return render_template('knn.html', columns=ac, 
+    rate = accuracy_score(y_test, y_pred)
+
+    return render_template('knn.html', columns=ac, accuracy=float(rate), 
             tables=[df.to_html(classes='data', header="true")])
 
 # Submit unsupervised dataset
