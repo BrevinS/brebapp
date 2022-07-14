@@ -2,8 +2,15 @@
 
 {% block content %}
 
-    
-    {% include '_livefeed.html' %}
-    
+<body>
+    <div class="container">
+        <form method="POST" action="{{ url_for('record') }}">
+            <input type="submit" value="Capture" name="cap" />
+            <input type="submit" value="Stop/Start" name="stop" />
+            <input type="submit" value="Something" name="some" />
+        </form>
+        {% include '_livefeed.html' %}
+    </div>
+</body>
 
 {% endblock %}
