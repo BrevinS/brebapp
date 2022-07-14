@@ -22,6 +22,7 @@
                 <i class="navbar-brand white">
                     Logged in as {{ current_user.firstname }} {{ current_user.lastname }}
                 </i>
+                <a href="{{ url_for('record') }}" class="button navbar-brand">Record</a>
             {% endif %}    
             <!--MEDIA ICONS-->
             <!-- LinkedIn -->
