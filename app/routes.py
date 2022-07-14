@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for, request, Response
 from flask_sqlalchemy import sqlalchemy
 from app import app, db
 from app.forms import RegisterForm, LoginForm, MLForm, MLFormS, KMeanForm
@@ -15,6 +15,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 import matplotlib.pyplot as plt
 import uuid
+import cv2
 
 @app.before_first_request
 def initDB(*args, **kwargs):
@@ -433,3 +434,23 @@ def addtarget(column_name, dataframe_id, option):
 
     return redirect(url_for('dataframeview', dataframe_id=dataframe.id, option=option))
 
+def gen_frames():  
+    while True:
+        camera = cv2.VideoCapture(0)
+        success, frame = camera.read()  # read the camera frame
+        if not success:
+            break
+        else:
+            ret, buffer = cv2.imencode('.jpg', frame)
+            frame = buffer.tobytes()
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
+@app.route('/record', methods=['GET'])
+def record():
+    return render_template('record.html')
+
+@app.route('/livefeed')
+def livefeed():
+
+    return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
