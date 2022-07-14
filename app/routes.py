@@ -14,6 +14,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 import matplotlib.pyplot as plt
+import datetime, time
 import uuid
 import cv2
 
@@ -434,10 +435,13 @@ def addtarget(column_name, dataframe_id, option):
 
     return redirect(url_for('dataframeview', dataframe_id=dataframe.id, option=option))
 
+# Found https://towardsdatascience.com/video-streaming-in-web-browsers-with-opencv-flask-93a38846fe00
 def gen_frames():  
     while True:
-        camera = cv2.VideoCapture(0)
-        success, frame = camera.read()  # read the camera frame
+        # Local camera
+        #camera = cv2.VideoCapture(0) 
+        global camera
+        success, frame = camera.read()  
         if not success:
             break
         else:
@@ -446,11 +450,33 @@ def gen_frames():
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
-@app.route('/record', methods=['GET'])
+global switch, camera
+switch = 1
+camera = cv2.VideoCapture(0)
+
+@app.route('/record', methods=['GET', 'POST'])
 def record():
+    global switch, camera
+    if request.method == 'POST':
+        if request.form.get('cap') == 'Capture':
+            pass
+        elif request.form.get('some') == 'Something':
+            pass
+        elif request.form.get('stop') == 'Stop/Start':
+            if(switch == 1):
+                switch = 0
+                camera.release()
+                cv2.destroyAllWindows()
+                
+            else:
+                camera = cv2.VideoCapture(0)
+                switch = 1
+    
+    elif request.method=='GET':
+        return render_template('record.html')
+
     return render_template('record.html')
 
 @app.route('/livefeed')
 def livefeed():
-
     return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
