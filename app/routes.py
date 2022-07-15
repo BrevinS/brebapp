@@ -18,6 +18,8 @@ import datetime, time
 import uuid
 import cv2
 
+camera = cv2.VideoCapture(0)
+
 @app.before_first_request
 def initDB(*args, **kwargs):
     db.create_all()
@@ -435,12 +437,16 @@ def addtarget(column_name, dataframe_id, option):
 
     return redirect(url_for('dataframeview', dataframe_id=dataframe.id, option=option))
 
+global switch
+switch = 1
+
 # Found https://towardsdatascience.com/video-streaming-in-web-browsers-with-opencv-flask-93a38846fe00
 def gen_frames():  
+    #global camera
     while True:
         # Local camera
+        
         #camera = cv2.VideoCapture(0) 
-        global camera
         success, frame = camera.read()  
         if not success:
             break
@@ -449,10 +455,6 @@ def gen_frames():
             frame = buffer.tobytes()
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
-global switch, camera
-switch = 1
-camera = cv2.VideoCapture(0)
 
 @app.route('/record', methods=['GET', 'POST'])
 def record():
@@ -477,6 +479,7 @@ def record():
 
     return render_template('record.html')
 
-@app.route('/livefeed')
+@app.route('/livefeed', methods=['GET'])
 def livefeed():
+    time.sleep(5)
     return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
