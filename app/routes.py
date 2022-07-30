@@ -13,12 +13,12 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import datetime, time
 import uuid
 import cv2
-
-camera = cv2.VideoCapture(0)
 
 @app.before_first_request
 def initDB(*args, **kwargs):
@@ -303,10 +303,14 @@ def hier(dataframe_id):
             #for a in set(labels):
             #    y = df[[labels]==a].mean(axis=0)
             #    clustercenters.append(list(y[:-1]))
-            
+        
             X = X.iloc[:,:2]
-            #plt.scatter(X[0], X[1], c=labels, cmap='rainbow')
-            #plt.savefig('hier_pic.png')
+            plt.ioff()
+            fig = plt.figure()
+            plt.scatter(X[0], X[1], c=labels, cmap='rainbow')
+            plt.savefig('static/plts/hier_pic.png')
+            plt.close(fig)
+
         except ValueError:
             flash('Features must contain ordinal values i.e. "1", "2", etc...')
 
@@ -346,10 +350,15 @@ def kmeans(dataframe_id):
             print(model.cluster_centers_)
             clustercenters = model.cluster_centers_
             labels = model.predict(X.iloc[:,:2])
-            #plt.scatter(X[0], X[1], c=labels, cmap='rainbow')
-            #plt.savefig('kmean_pic.png')
+            plt.ioff()
+            fig = plt.figure()
+            plt.scatter(X[0], X[1], c=labels, cmap='rainbow')
+            plt.savefig('static/plts/kmean_pic.png')
+            plt.close(fig)
+            
         except ValueError:
             flash('Features must contain ordinal values i.e. "1", "2", etc...')
+            # POSSIBLE REFER TO OTHER PAGE? ONEHOTENCODING,.. etc.
 
     return render_template('kmeans.html', columns=ac, nclusters=n, clusterc=clustercenters, 
                 tables=[df.to_html(classes='data', header="true")], form=form)
@@ -456,30 +465,29 @@ def gen_frames():
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
-@app.route('/record', methods=['GET', 'POST'])
-def record():
-    global switch, camera
-    if request.method == 'POST':
-        if request.form.get('cap') == 'Capture':
-            pass
-        elif request.form.get('some') == 'Something':
-            pass
-        elif request.form.get('stop') == 'Stop/Start':
-            if(switch == 1):
-                switch = 0
-                camera.release()
-                cv2.destroyAllWindows()
-                
-            else:
-                camera = cv2.VideoCapture(0)
-                switch = 1
-    
-    elif request.method=='GET':
-        return render_template('record.html')
+#camera = cv2.VideoCapture(0)
 
-    return render_template('record.html')
+#@app.route('/record', methods=['GET', 'POST'])
+#def record():
+#    global switch, camera
+#    if request.method == 'POST':
+#        if request.form.get('cap') == 'Capture':
+#            pass
+#        elif request.form.get('some') == 'Something':
+#            pass
+#        elif request.form.get('stop') == 'Stop/Start':
+#            if(switch == 1):
+#                switch = 0
+#                camera.release()
+#                cv2.destroyAllWindows()                
+#            else:
+#                camera = cv2.VideoCapture(0)
+#                switch = 1    
+#    elif request.method=='GET':
+#        return render_template('record.html')
+#    return render_template('record.html')
 
-@app.route('/livefeed', methods=['GET'])
-def livefeed():
-    time.sleep(5)
-    return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+#@app.route('/livefeed', methods=['GET'])
+#def livefeed():
+#    time.sleep(5)
+#    return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
