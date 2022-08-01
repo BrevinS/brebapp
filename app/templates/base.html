@@ -11,7 +11,7 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     </head>
     <body>
-        <div class="navbar navbar-inverse">
+        <div class="navbar navbar-inverse navbar-static-top">
             <a class="button navbar-brand" href="{{url_for('aboutme')}}">About Me</a>
             <a href="{{ url_for('homepage') }}" class="button navbar-brand">Home</a>
             <a href="{{ url_for('register') }}" class="button navbar-brand">Create Account</a>
@@ -27,7 +27,7 @@
             <!--MEDIA ICONS-->
             <!-- LinkedIn -->
             <a
-                style="float:right;"
+                style="float:right; vertical-align: baseline; height: 50px;"
                 class="btn btn-primary btn-lg btn-floating"
                 style="background-color: white;"
                 href="https://www.linkedin.com/in/brevin-simon-a197ba206/"
@@ -37,7 +37,7 @@
             </a> 
             <!-- GitHub -->
             <a
-                style="float:right;"
+                style="float:right; vertical-align: super; height: 50px;"
                 class="btn btn-primary btn-lg btn-floating"
                 style="background-color: white;"
                 href="https://github.com/BrevinS"
