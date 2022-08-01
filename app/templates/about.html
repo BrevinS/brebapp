@@ -5,27 +5,114 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 .parallax {
-  /* The image used */
-  background: url(../static/camp.jpg);
+  background: url(../static/camp.jpeg);
 
-  /* Set a specific height */
   min-height: 500px; 
 
-  /* Create the parallax scrolling effect */
   background-attachment: fixed;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
 }
+  * {
+    box-sizing: border-box;
+  }
+
+  /* Height in here */
+  .column {
+    float: left;
+    width: 50%;
+    padding: 10px;
+    height: 220px;
+  }
+
+  .column2 {
+    float: left;
+    width: 45%;
+    margin-left: 20px;
+    padding: 10px;
+  }
+
+  .column3 {
+    float: left;
+    width: 25%;
+    margin-right: 20px;
+    margin-left: 20px;
+    padding: 10px;
+  }
+
+  .row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
 </style>
 </head>
 <body style="background-color: rgb(76,76,76);">
 <div class="parallax"></div>
 
-<div style="height:1000px;background-color:lightgray;font-size:36px;margin:70px;
+<div style="height:1000px;font-size:36px;margin:90px;
             background-color:rgb(64,64,64);border-radius: 25px;">
-  <div style="margin:12px;color:white;">
-    My name is brevin simon and I am a computer scientist and alumni at Washington State University. 
+  <div style="margin:28px;color:white;font-size: 23px;font-family: monospace;">
+    <br>
+    <p>
+    My name is Brevin Simon and I am a graduate from Washington State University with a Bachelor of Science 
+    degree in Computer Science with a focus in Artificial Intelligence and a math minor. I am most passionate 
+    in the field of machine learning and data driven algorithms. 
+    </p>
+    <br>
+    <p>
+    My company experience is meager and is limited to my Microsoft Azure senior project where I worked with 
+    Senior Software Engineers to cluster users based on their telemetry data within Azure. This project taught 
+    me much about professional communication, the development process, data manipulation, and presentation. 
+    Practically speaking I learned a lot about how machine learning algorithms work and how to adjust data to 
+    allow these algorithms to work their best. Then ultimately, presenting these findings and analyzing correlations 
+    in the segmentation that may be hard to find when working high dimensional data. 
+    </p>
+    <br>
+
+    <p>
+      <div class="row">
+        <header style="text-align: center;">Skills</header>
+        <div class="column" style="background-color:#bbb;">
+          <!--Another table?-->
+          <h2>Languages</h2>
+          <div class="row">
+            <div class="column2" style="background-color:#aaa;">
+              <li>C</li>
+              <li>C++</li>
+              <li>Python</li>
+            </div>
+            <div class="column2" style="background-color:#aaa;">
+              <li>*Haskell</li>
+              <li>*C#</li>
+              <li>*Javascript</li>
+            </div>
+          </div>
+         
+        </div>
+        <div class="column" style="background-color:#aaa;">
+          <h2>Libraries/Packages</h2>
+          <div class="row" style="font-size: 16px;">
+            <div class="column3" style="background-color:#aaa;">
+              <li>Scikit-Learn</li>
+              <li>Flask/SQL</li>
+              <li>Tensorflow</li>
+            </div>
+            <div class="column3" style="background-color:#aaa;">
+              <li>Pytorch</li>
+              <li>Matplotlib</li>
+              <li>Pandas</li>
+            </div>
+            <div class="column3" style="background-color:#aaa;">
+              <li>Numpy</li>
+            </div>
+          </div>
+        </div>
+      </div>
+    </p>
+
+    <footer style="text-align: center;">Updated: July 31, 2022</footer>
   </div>
 </div>
 
