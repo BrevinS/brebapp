@@ -3,6 +3,14 @@
     color: black;
 }
 
+.navbar {
+    height: 50px;
+}
+
+.navbar.navbar-inverse {
+    position: absolute;
+}
+
 .datahome {
     text-align : center;
     width : 50%;
@@ -35,12 +43,12 @@
   }
 
 .navbar-inverse {
-    position:fixed;
     top:0;
     color: white;
     background-color: black;
     width:100%;
     left:0;
+    height: 50px;
 }
 
 .navbar b:hover {
