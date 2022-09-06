@@ -5,7 +5,7 @@ Currenty supports unsupervised algorithms Hierarchical Clustering, Kmeans Cluste
 
 Working on adding a couple more algorithms specifically to supervised algorithms. Will then add ways to make data ordinal by allowing the use of One-Hot-Encoding and other techniques to change or add columns that are ML compatable. 
 
-Sometimes public @ website [brevin.me](brevin.me)
+Sometimes public @ website "brevin.me"
 
 https://user-images.githubusercontent.com/36112545/182076470-d424aaa6-f7cb-497b-b6dd-139fe14cb63d.mov
 
