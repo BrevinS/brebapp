@@ -6,11 +6,6 @@ files:
  - source: requirements.txt
    destination: /home/ec2-user/var/www/html/
 permissions:
-  - object: /home/ec2-user/var/www/html/app/flaskrun.py
-    owner: ec2-user
-    mode: 644
-    type:
-      - file
   - object: /home/ec2-user/python-flask-service/flaskrun.py
     owner: ec2-user
     mode: 644
