@@ -24,7 +24,7 @@ permissions:
   
 hooks:
   AfterInstall:
-   - location: scripts/install_dependencies
+   - location: /home/ec2-user/var/www/html/scripts/install_dependencies
      timeout: 300
      runas: root
    - location: scripts/start_server
