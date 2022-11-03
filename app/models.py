@@ -26,6 +26,10 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    def __repr__(self):
+        return '<User {}>'.format(self.username)
+
+
 # This can be one-to-one or one-to-many from user
 class Dataframe(db.Model):
     # id for Dataframe
@@ -37,6 +41,9 @@ class Dataframe(db.Model):
     # many features (one-to-many relationship)
     features = db.relationship('Feature', backref='Dataframe', uselist=True)
 
+    def __repr__(self):
+        return '<Dataframe {}>'.format(self.identifier)
+
 # One-to-many from Dataframe
 class Feature(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -46,11 +53,20 @@ class Feature(db.Model):
     tags = db.relationship('Tag', secondary=coltags,
                             primaryjoin=(coltags.c.df_id == id),
                             backref=db.backref('coltags', lazy='dynamic'), lazy='dynamic')
+    
+    def __repr__(self):
+        return '{}'.format(self.feature_name)
 
 class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20))
 
+    def __repr__(self):
+        return '<Tag {}>'.format(self.name)
+
+    def add_tag(self, tag):
+        if not self.is_tagged(tag):
+            self.tags.append(tag)
 
 
 
