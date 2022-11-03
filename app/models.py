@@ -29,7 +29,6 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
-
 # This can be one-to-one or one-to-many from user
 class Dataframe(db.Model):
     # id for Dataframe
