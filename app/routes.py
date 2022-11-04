@@ -20,6 +20,7 @@ import datetime, time
 import uuid
 import cv2
 import os
+from config import basedir
 
 @app.before_first_request
 def initDB(*args, **kwargs):
@@ -309,7 +310,7 @@ def hier(dataframe_id):
             plt.ioff()
             fig = plt.figure()
             plt.scatter(X[0], X[1], c=labels, cmap='rainbow')
-            plt.savefig('static/plts/hier_pic.png')
+            plt.savefig('hier_pic.png')
             plt.close(fig)
 
         except ValueError:
@@ -358,10 +359,12 @@ def kmeans(dataframe_id):
             plt.ioff()
             fig = plt.figure()
             plt.scatter(X[0], X[1], c=labels, cmap='rainbow')
-            if url_for('static', filename='plts/kmeans_pic.png'):
-                os.remove('static/plts/kmeans_pic.png')
 
-            plt.savefig('static/plts/kmean_pic.png')
+            if 'kmean_pic.png' in os.listdir('app/static/plts'):
+                os.remove('app/static/plts/kmean_pic.png')
+                print('Removed kmean_pic.png')
+            
+            plt.savefig('app/static/plts/kmean_pic.png')
             plt.close(fig)
             
         except ValueError:
