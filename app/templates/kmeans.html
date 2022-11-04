@@ -35,11 +35,17 @@
         {% endif %}
         <div class="center">
             <img src='../static/plts/kmean_pic.png' content="no-cache" />
-            <button class="btn" style="width: 400px;"><i class="fa fa-download"></i> Download</button>
+            <div style="height: 15px;">
+                
+            </div>
+            <a href="../static/plts/kmean_pic.png" download>
+                <button class="btn" style="width: 400px;"><i class="fa fa-download"></i> Download</button>
+            </a>
         </div>
-        <br>
-        
-        
+        <!--print <br> 3 times-->
+        {% for i in range(3) %}
+            <br>
+        {% endfor %}
     </div>
 </body>
 
