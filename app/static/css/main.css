@@ -1,3 +1,20 @@
+img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.square {
+    height: 600px;
+    width: 1200px;
+}
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+
 .navbar a:hover {
     background: #ddd;
     color: black;
@@ -34,13 +51,6 @@
     overflow:scroll; 
     height:400px;
 }
-
-.center {
-    margin: auto;
-    width: 50%;
-    border: 3px solid green;
-    padding: 10px;
-  }
 
 .navbar-inverse {
     top:0;

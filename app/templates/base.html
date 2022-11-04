@@ -7,6 +7,7 @@
         <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     </head>
@@ -25,6 +26,26 @@
             
             {% endif %}    
             <!--MEDIA ICONS-->
+            <!--Facebook-->
+            <a
+                style="float:right; vertical-align: super; height: 50px;"
+                class="btn btn-dark btn-lg btn-floating"
+                style="background-color: white;"
+                href="https://www.facebook.com/brevin.simon/"
+                target="_blank"
+                role="button"
+                ><i class="bi bi-facebook"></i>
+            </a>
+            <!--Twitter-->
+            <a
+                style="float:right; vertical-align: super; height: 50px;"
+                class="btn btn-dark btn-lg btn-floating"
+                style="background-color: white;"
+                href="https://twitter.com/BrevinOfficial"
+                target="_blank"
+                role="button"
+                ><i class="bi bi-twitter"></i>
+            </a>
             <!-- LinkedIn -->
             <a
                 style="float:right; vertical-align: baseline; height: 50px;"
@@ -45,25 +66,6 @@
                 role="button"
                 ><i class="bi bi-github"></i>
             </a>
-            <!--Twitter-->
-            <a
-                style="float:right; vertical-align: super; height: 50px;"
-                class="btn btn-dark btn-lg btn-floating"
-                style="background-color: white;"
-                href="https://twitter.com/BrevinOfficial"
-                target="_blank"
-                role="button"
-                ><i class="bi bi-twitter"></i>
-            <!--Facebook-->
-            <a
-                style="float:right; vertical-align: super; height: 50px;"
-                class="btn btn-dark btn-lg btn-floating"
-                style="background-color: white;"
-                href="https://www.facebook.com/brevin.simon/"
-                target="_blank"
-                role="button"
-                ><i class="bi bi-facebook"></i>
-
         </div>
         {% with messages = get_flashed_messages() %}
         {% if messages %}
