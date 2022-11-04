@@ -42,12 +42,12 @@ color: black;
 }
 
 .previous {
-background-color: #f1f1f1;
-color: black;
+background-color: black;
+color: white;
 }
 
 .next {
-background-color: #04AA6D;
+background-color: black;
 color: white;
 }
 
