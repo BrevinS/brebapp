@@ -33,9 +33,19 @@
         {% if clusterc|length > 1 %}
             {{ clusterc }}
         {% endif %}
-
-        <img src='../static/plts/hier_pic.png' content="no-cache">
-
+        <div class="center">
+            <img src='../static/plts/hier_pic.png' content="no-cache" />
+            <div style="height: 15px;">
+                
+            </div>
+            <a href="../static/plts/hier_pic.png" download>
+                <button class="btn" style="width: 400px;"><i class="fa fa-download"></i> Download</button>
+            </a>
+        </div>
+        <!--print <br> 3 times app/static/plts-->
+        {% for i in range(3) %}
+            <br>
+        {% endfor %}
     </div>
 </body>
 
