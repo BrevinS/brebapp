@@ -3,16 +3,56 @@ img {
     max-height: 100%;
 }
 
+#container {
+    display: flex;        
+    align-items: center;          /* establish flex container */
+    flex-direction: row;            /* default value; can be omitted */
+    flex-wrap: nowrap;              /* default value; can be omitted */
+  }
+
 .square {
     height: 600px;
     width: 1200px;
 }
+
+div.middle-div {
+    position: relative;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+  }
 
 .center {
     display: block;
     margin-left: auto;
     margin-right: auto;
     width: 50%;
+}
+
+.fix {
+    text-decoration: none;
+    display: inline-block;
+    padding: 8px 16px;
+}
+  
+a:hover {
+background-color: #ddd;
+color: black;
+}
+
+.previous {
+background-color: #f1f1f1;
+color: black;
+}
+
+.next {
+background-color: #04AA6D;
+color: white;
+}
+
+.round {
+border-radius: 50%;
 }
 
 .navbar a:hover {
