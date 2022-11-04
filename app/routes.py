@@ -19,6 +19,7 @@ import matplotlib.pyplot as plt
 import datetime, time
 import uuid
 import cv2
+import os
 
 @app.before_first_request
 def initDB(*args, **kwargs):
@@ -335,6 +336,10 @@ def kmeans(dataframe_id):
     n = 0
     clustercenters = []
     if request.method == 'POST' and form.validate_on_submit():
+        #print current working directory
+        
+
+        # delete image in directory
         n = form.nclusters.data
         model = KMeans(n_clusters=int(n))
         #flash('Number of Clusters! {}'.format(int(n)))
@@ -353,6 +358,9 @@ def kmeans(dataframe_id):
             plt.ioff()
             fig = plt.figure()
             plt.scatter(X[0], X[1], c=labels, cmap='rainbow')
+            if url_for('static', filename='plts/kmeans_pic.png'):
+                os.remove('static/plts/kmeans_pic.png')
+
             plt.savefig('static/plts/kmean_pic.png')
             plt.close(fig)
             
