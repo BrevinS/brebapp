@@ -3,6 +3,10 @@ img {
     max-height: 100%;
 }
 
+table {
+    width: 100%;
+}
+
 #container {
     display: flex;        
     align-items: center;          /* establish flex container */
