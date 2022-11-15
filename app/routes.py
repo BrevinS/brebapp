@@ -311,9 +311,9 @@ def hier(dataframe_id):
             fig = plt.figure()
             plt.scatter(X[0], X[1], c=labels, cmap='rainbow')
 
-            if 'kmean_pic.png' in os.listdir('app/static/plts'):
-                os.remove('app/static/plts/kmean_pic.png')
-                print('Removed kmean_pic.png')
+            if 'hier_pic.png' in os.listdir('app/static/plts'):
+                os.remove('app/static/plts/hier_pic.png')
+                print('Removed hier_pic.png')
             
             plt.savefig('app/static/plts/hier_pic.png')
             plt.close(fig)

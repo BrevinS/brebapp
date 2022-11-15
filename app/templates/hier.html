@@ -33,15 +33,35 @@
         {% if clusterc|length > 1 %}
             {{ clusterc }}
         {% endif %}
-        <div class="center">
-            <img src='../static/plts/hier_pic.png' content="no-cache" />
-            <div style="height: 15px;">
-                
+
+        <div id="container">
+            <!--Left button-->
+            <div class="middle">
+                <!--url_for(kmeans)-->
+                <div class="middle">
+                    -1
+                </div>
+                <a href="{{ url_for('update', dataframe_id=dataframe_id, mlalg=2, ncluster=nclusters, op=1) }}" class="previous round fix" style="width: 20px;">&#8249;</a>
             </div>
-            <a href="../static/plts/hier_pic.png" download>
-                <button class="btn" style="width: 400px;"><i class="fa fa-download"></i> Download</button>
-            </a>
+            <!--Middle-->
+            <div class="center">
+                <img src='../static/plts/hier_pic.png' content="no-cache" />
+                <div style="height: 15px;">
+                    
+                </div>
+                <a href="../static/plts/hier_pic.png" download>
+                    <button class="previous" style="width: 400px;"><i class="fa fa-download"></i> Download</button>
+                </a>
+            </div>
+            <!--Right button-->
+            <div class="middle">
+                <div class="middle">
+                    +1
+                </div>
+                <a href="{{ url_for('update', dataframe_id=dataframe_id, mlalg=2, ncluster=nclusters, op=2) }}" class="previous round fix" style="width: 20px;">&#8250;</a>
+            </div>
         </div>
+
         <!--print <br> 3 times app/static/plts-->
         {% for i in range(3) %}
             <br>
