@@ -33,6 +33,9 @@
         {% if clusterc|length > 1 %}
             {{ clusterc }}
         {% endif %}
+        {{ dataframe_id }}
+        
+        {{ nclusters }}
         <div id="container">
             <!--Left button-->
             <div class="middle">
@@ -40,7 +43,7 @@
                 <div class="middle">
                     -1
                 </div>
-                <a href="#" class="previous round fix" style="width: 20px;">&#8249;</a>
+                <a href="{{ url_for('update', dataframe_id=dataframe_id, mlalg=1, ncluster=nclusters, op=1) }}" class="previous round fix" style="width: 20px;">&#8249;</a>
             </div>
             <!--Middle-->
             <div class="center">
@@ -53,22 +56,12 @@
                 </a>
             </div>
             <!--Right button-->
-            <form method=post enctype=multipart/form-data>
-                <button class="next round fix" name="next" style="width: 20px;">&#8250;</button>
-                
-                <!--
-                    <input type=file name=next style="text-align: right;">
-                    <input type="submit" value=Upload>
-                -->
-            </form>
-            <!--
+            <div class="middle">
                 <div class="middle">
-                    <div class="middle">
-                        +1
-                    </div>
-                    <a href="#" class="next round fix" style="width: 20px;">&#8250;</a>
+                    +1
                 </div>
-            -->
+                <a href="{{ url_for('update', dataframe_id=dataframe_id, mlalg=1, ncluster=nclusters, op=2) }}" class="previous round fix" style="width: 20px;">&#8250;</a>
+            </div>
         </div>
 
         <!--print <br> 3 times app/static/plts-->

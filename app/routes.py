@@ -324,6 +324,81 @@ def hier(dataframe_id):
     return render_template('hier.html', columns=ac, nclusters=n, clusterc=clustercenters, 
                 tables=[df.to_html(classes='data', header="true")], form=form)
 
+@app.route('/update/<dataframe_id>/<mlalg>/<ncluster>/<op>', methods=['GET', 'POST'])
+def update(dataframe_id, mlalg, ncluster, op):
+    dataf = Dataframe.query.get(dataframe_id)
+
+    featurelist, identlist, targetlist = returnfeatures(dataf)
+
+    conn = sqlite3.connect('dataframe.db')
+    c = conn.cursor()
+    df = pd.read_sql('select * from dataframe', conn)
+    ac = df.columns.values
+
+    clustercenters = []
+    
+    if(op == '1'):
+        ncluster = int(ncluster) - 1
+        if(ncluster < 2):
+            if(mlalg == '1'):
+                flash('K-Means must have at least 2 clusters')
+                return redirect(url_for('kmeans', dataframe_id=dataframe_id))
+            elif(mlalg == '2'):
+                flash('Hierarchical Clustering must have at least 2 clusters')
+                return redirect(url_for('hier', dataframe_id=dataframe_id))
+    elif(op == '2'):
+        ncluster = int(ncluster) + 1
+    else:
+        pass
+
+    n = ncluster
+
+    if(mlalg == '1'):
+        model = KMeans(n_clusters=int(n))
+        X = df.loc[:, df.columns != '{}'.format(identlist[0])]
+    elif(mlalg == '2'):
+        model = AgglomerativeClustering(n_clusters=int(n), affinity='euclidean', linkage='ward')
+        X = df.loc[:, df.columns != '{}'.format(identlist[0])]
+
+    print('Identity {}'.format(identlist))
+
+    form = KMeanForm()
+    try:
+        X = StandardScaler().fit_transform(X)
+        pca = PCA(n_components = int(len(featurelist)))
+        X = pca.fit_transform(X)
+        X = pd.DataFrame(X)
+        model.fit(X.iloc[:,:2])
+        print('CLUSTER CENTERS')
+        print(model.cluster_centers_)
+        clustercenters = model.cluster_centers_
+        labels = model.predict(X.iloc[:,:2])
+        plt.ioff()
+        fig = plt.figure()
+        plt.scatter(X[0], X[1], c=labels, cmap='rainbow')
+
+        if(mlalg == '1'):
+            if 'kmean_pic.png' in os.listdir('app/static/plts'):
+                os.remove('app/static/plts/kmean_pic.png')
+                print('Removed kmean_pic.png')
+            plt.savefig('app/static/plts/kmean_pic.png')
+            plt.close(fig)
+        elif(mlalg == '2'):
+            if 'hier_pic.png' in os.listdir('app/static/plts'):
+                os.remove('app/static/plts/hier_pic.png')
+                print('Removed hier_pic.png')
+            plt.savefig('app/static/plts/hier_pic.png')
+            plt.close(fig)
+
+    except ValueError:
+            flash('Features must contain ordinal values i.e. "1", "2", etc...')
+            # POSSIBLE REFER TO OTHER PAGE? ONEHOTENCODING,.. etc.
+    
+    if(mlalg == '1'):
+        return redirect(url_for('kmeans', dataframe_id=dataframe_id))
+    elif(mlalg == '2'):
+        return redirect(url_for('hier', dataframe_id=dataframe_id))
+
 # KMEANS template. Show something relevant
 # STILL NEEDS: Graph, Elbow #Clusters recommendation, plt.scatter sucks
 @app.route('/kmeans/<dataframe_id>', methods=['GET', 'POST'])
@@ -377,7 +452,7 @@ def kmeans(dataframe_id):
             # POSSIBLE REFER TO OTHER PAGE? ONEHOTENCODING,.. etc.
 
     return render_template('kmeans.html', columns=ac, nclusters=n, clusterc=clustercenters, 
-                tables=[df.to_html(classes='data', header="true")], form=form)
+                tables=[df.to_html(classes='data', header="true")], form=form, dataframe_id=dataframe_id)
 
 @app.route('/dataframeview/<dataframe_id>/<option>', methods=['GET', 'POST'])
 def dataframeview(dataframe_id, option):
