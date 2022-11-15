@@ -9,9 +9,9 @@ table {
 
 #container {
     display: flex;        
-    align-items: center;          /* establish flex container */
-    flex-direction: row;            /* default value; can be omitted */
-    flex-wrap: nowrap;              /* default value; can be omitted */
+    align-items: center;         
+    flex-direction: row;            
+    flex-wrap: nowrap;             
   }
 
 .square {

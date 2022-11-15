@@ -21,6 +21,7 @@ import uuid
 import cv2
 import os
 from config import basedir
+import plotly.express as px
 
 @app.before_first_request
 def initDB(*args, **kwargs):
@@ -446,6 +447,10 @@ def kmeans(dataframe_id):
             labels = model.predict(X.iloc[:,:2])
             plt.ioff()
             fig = plt.figure()
+            #fig1 = plt.figure()
+            #ax = fig1.add_subplot(111, projection='3d')
+            #ax.scatter(X[0], X[1], X[2], c=labels, cmap='rainbow')
+
             plt.scatter(X[0], X[1], c=labels, cmap='rainbow')
 
             if 'kmean_pic.png' in os.listdir('app/static/plts'):
@@ -454,6 +459,8 @@ def kmeans(dataframe_id):
             
             plt.savefig('app/static/plts/kmean_pic.png')
             plt.close(fig)
+
+            
             
         except ValueError:
             flash('Features must contain ordinal values i.e. "1", "2", etc...')
