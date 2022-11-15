@@ -395,7 +395,7 @@ def update(dataframe_id, mlalg, ncluster, op):
             # POSSIBLE REFER TO OTHER PAGE? ONEHOTENCODING,.. etc.
     
     if(mlalg == '1'):
-        return redirect(url_for('kmeans', dataframe_id=dataframe_id))
+        return redirect(url_for('kmeans', dataframe_id=dataframe_id, nclusters=n))
     elif(mlalg == '2'):
         return redirect(url_for('hier', dataframe_id=dataframe_id))
 
@@ -414,14 +414,18 @@ def kmeans(dataframe_id):
 
     # What more do we want? # of clusters?
     form = KMeanForm()
-    n = 0
+    n = 2
     clustercenters = []
+    
+    if request.args.get('nclusters'):
+        print('NCLUSTERS')
+        print(request.args.get('nclusters'))
+        n = request.args.get('nclusters')
     if request.method == 'POST' and form.validate_on_submit():
         #print current working directory
-        
-
-        # delete image in directory
         n = form.nclusters.data
+        if(int(n) < 2):
+            n = 3
         model = KMeans(n_clusters=int(n))
         #flash('Number of Clusters! {}'.format(int(n)))
         print('Identity {}'.format(identlist))
