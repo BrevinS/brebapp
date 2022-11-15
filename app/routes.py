@@ -289,9 +289,16 @@ def hier(dataframe_id):
     form = KMeanForm()
     n = 0
     clustercenters = []
+
+    if request.args.get('nclusters'):
+        print('NCLUSTERS')
+        print(request.args.get('nclusters'))
+        n = request.args.get('nclusters')
     if request.method == 'POST' and form.validate_on_submit():
         n = form.nclusters.data
         # EUCLIDEAN OR NOT?
+        if(int(n) < 2):
+            n = 3
         model = AgglomerativeClustering(n_clusters=int(n), affinity='euclidean', linkage='ward')
         X = df.loc[:, df.columns != '{}'.format(identlist[0])]
         try:
@@ -301,10 +308,6 @@ def hier(dataframe_id):
             X = pd.DataFrame(X)
             model.fit(X.iloc[:,:2])
             labels = model.labels_
-
-            #for a in set(labels):
-            #    y = df[[labels]==a].mean(axis=0)
-            #    clustercenters.append(list(y[:-1]))
         
             X = X.iloc[:,:2]
             plt.ioff()
@@ -322,7 +325,7 @@ def hier(dataframe_id):
             flash('Features must contain ordinal values i.e. "1", "2", etc...')
 
     return render_template('hier.html', columns=ac, nclusters=n, clusterc=clustercenters, 
-                tables=[df.to_html(classes='data', header="true")], form=form)
+                tables=[df.to_html(classes='data', header="true")], form=form, dataframe_id=dataframe_id)
 
 @app.route('/update/<dataframe_id>/<mlalg>/<ncluster>/<op>', methods=['GET', 'POST'])
 def update(dataframe_id, mlalg, ncluster, op):
@@ -368,11 +371,12 @@ def update(dataframe_id, mlalg, ncluster, op):
         pca = PCA(n_components = int(len(featurelist)))
         X = pca.fit_transform(X)
         X = pd.DataFrame(X)
+        #print('CLUSTER CENTERS')
+        #print(model.cluster_centers_)
+        #clustercenters = model.cluster_centers_
         model.fit(X.iloc[:,:2])
-        print('CLUSTER CENTERS')
-        print(model.cluster_centers_)
-        clustercenters = model.cluster_centers_
-        labels = model.predict(X.iloc[:,:2])
+        labels = model.labels_
+        X = X.iloc[:,:2]
         plt.ioff()
         fig = plt.figure()
         plt.scatter(X[0], X[1], c=labels, cmap='rainbow')
@@ -397,7 +401,7 @@ def update(dataframe_id, mlalg, ncluster, op):
     if(mlalg == '1'):
         return redirect(url_for('kmeans', dataframe_id=dataframe_id, nclusters=n))
     elif(mlalg == '2'):
-        return redirect(url_for('hier', dataframe_id=dataframe_id))
+        return redirect(url_for('hier', dataframe_id=dataframe_id, nclusters=n))
 
 # KMEANS template. Show something relevant
 # STILL NEEDS: Graph, Elbow #Clusters recommendation, plt.scatter sucks
@@ -416,7 +420,7 @@ def kmeans(dataframe_id):
     form = KMeanForm()
     n = 2
     clustercenters = []
-    
+
     if request.args.get('nclusters'):
         print('NCLUSTERS')
         print(request.args.get('nclusters'))
