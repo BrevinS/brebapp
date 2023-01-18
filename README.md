@@ -11,7 +11,7 @@ UPDATE free trial expired 🤨 (Sometime in October)
 
 FINAL UPDATE Added -1 Cluster Button and +1 Cluster Button accompanied with a download link! (December)
 
-Final Demo Video
+Final 1min Demo Video 
 
 https://user-images.githubusercontent.com/36112545/212781152-8c43e94a-237e-4415-b772-57c9fbc7daf7.mov
 
