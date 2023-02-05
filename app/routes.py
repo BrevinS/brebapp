@@ -21,7 +21,8 @@ import uuid
 import cv2
 import os
 from config import basedir
-import plotly.express as px
+import openai
+
 
 @app.before_first_request
 def initDB(*args, **kwargs):
@@ -73,6 +74,14 @@ def login():
 
 @app.route('/aboutme', methods=['GET', 'POST'])
 def aboutme():
+    openai.api_key = "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"
+    response = openai.Completion.create(
+        engine="text-davinci-002",
+        prompt="describe statistical principles of each cluster in app/static/plts/kmean_pic.png",
+        temperature=0.9
+    )
+    print(response.choices[0].text)
+
     return render_template('about.html')
 
 EXTENSION_ALLOWED = set(['csv'])
@@ -460,8 +469,6 @@ def kmeans(dataframe_id):
             plt.savefig('app/static/plts/kmean_pic.png')
             plt.close(fig)
 
-            
-            
         except ValueError:
             flash('Features must contain ordinal values i.e. "1", "2", etc...')
             # POSSIBLE REFER TO OTHER PAGE? ONEHOTENCODING,.. etc.
