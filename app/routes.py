@@ -21,7 +21,6 @@ import uuid
 import cv2
 import os
 from config import basedir
-import openai
 
 
 @app.before_first_request
@@ -74,13 +73,6 @@ def login():
 
 @app.route('/aboutme', methods=['GET', 'POST'])
 def aboutme():
-    openai.api_key = "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"
-    response = openai.Completion.create(
-        engine="text-davinci-002",
-        prompt="describe statistical principles of each cluster in app/static/plts/kmean_pic.png",
-        temperature=0.9
-    )
-    print(response.choices[0].text)
 
     return render_template('about.html')
 
@@ -324,11 +316,14 @@ def hier(dataframe_id):
             fig = plt.figure()
             plt.scatter(X[0], X[1], c=labels, cmap='rainbow')
 
-            if 'hier_pic.png' in os.listdir('app/static/plts'):
-                os.remove('app/static/plts/hier_pic.png')
-                print('Removed hier_pic.png')
+            if len(os.listdir('static/plts')) is not None:
+                print('DIRECTORY EMPTY')
+                if 'hier_pic.png' in os.listdir('static/plts'):
+                    os.remove('static/plts/hier_pic.png')
+                    print('Removed hier_pic.png')
             
-            plt.savefig('app/static/plts/hier_pic.png')
+            plt.savefig('static/plts/hier_pic.png')
+            print('SAVING HIER PIC---------')
             plt.close(fig)
 
         except ValueError:
@@ -392,16 +387,16 @@ def update(dataframe_id, mlalg, ncluster, op):
         plt.scatter(X[0], X[1], c=labels, cmap='rainbow')
 
         if(mlalg == '1'):
-            if 'kmean_pic.png' in os.listdir('app/static/plts'):
-                os.remove('app/static/plts/kmean_pic.png')
+            if 'kmean_pic.png' in os.listdir('static/plts'):
+                os.remove('static/plts/kmean_pic.png')
                 print('Removed kmean_pic.png')
-            plt.savefig('app/static/plts/kmean_pic.png')
+            plt.savefig('static/plts/kmean_pic.png')
             plt.close(fig)
         elif(mlalg == '2'):
-            if 'hier_pic.png' in os.listdir('app/static/plts'):
-                os.remove('app/static/plts/hier_pic.png')
+            if 'hier_pic.png' in os.listdir('static/plts'):
+                os.remove('static/plts/hier_pic.png')
                 print('Removed hier_pic.png')
-            plt.savefig('app/static/plts/hier_pic.png')
+            plt.savefig('static/plts/hier_pic.png')
             plt.close(fig)
 
     except ValueError:
@@ -462,11 +457,11 @@ def kmeans(dataframe_id):
 
             plt.scatter(X[0], X[1], c=labels, cmap='rainbow')
 
-            if 'kmean_pic.png' in os.listdir('app/static/plts'):
-                os.remove('app/static/plts/kmean_pic.png')
+            if 'kmean_pic.png' in os.listdir('static/plts'):
+                os.remove('static/plts/kmean_pic.png')
                 print('Removed kmean_pic.png')
             
-            plt.savefig('app/static/plts/kmean_pic.png')
+            plt.savefig('static/plts/kmean_pic.png')
             plt.close(fig)
 
         except ValueError:
