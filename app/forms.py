@@ -46,4 +46,8 @@ class KMeanForm(FlaskForm):
             (4, '4'), (5, '5'), (6, '6')])
     submit = SubmitField('Calculate')
 
+class TextForm(FlaskForm):
+    text = StringField('Text', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+    
     

@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request, Response
 from flask_sqlalchemy import sqlalchemy
 from app import app, db
-from app.forms import RegisterForm, LoginForm, MLForm, MLFormS, KMeanForm
+from app.forms import RegisterForm, LoginForm, MLForm, MLFormS, KMeanForm, TextForm
 from app.models import User, Dataframe, Feature, Tag
 from flask_login import current_user, login_user, logout_user, login_required
 import pandas as pd
@@ -70,6 +70,16 @@ def login():
         login_user(student, remember=form.rememberme.data)
         return redirect(url_for('homepage'))
     return render_template('login.html', title='Login Page', form=form)
+
+@app.route('/checkgpt3', methods=['GET', 'POST'])
+def checkgpt3():
+    form = TextForm()
+    if request.method == 'POST':
+        data = request.form['w3review']
+        print(data)
+        return redirect(url_for('checkgpt3'))
+    
+    return render_template('checkgpt3.html', form=form)
 
 @app.route('/aboutme', methods=['GET', 'POST'])
 def aboutme():
