@@ -21,7 +21,12 @@ import uuid
 import cv2
 import os
 from config import basedir
+import espn_scraper as espn
+import json
 
+
+def ppjson(data):
+    print(json.dumps(data, indent=2, sort_keys=True))
 
 @app.before_first_request
 def initDB(*args, **kwargs):
@@ -71,15 +76,29 @@ def login():
         return redirect(url_for('homepage'))
     return render_template('login.html', title='Login Page', form=form)
 
-@app.route('/checkgpt3', methods=['GET', 'POST'])
-def checkgpt3():
+@app.route('/nbalived', methods=['GET', 'POST'])
+def nbalived():
+    json_data = espn.get_url("https://www.espn.com/nba/boxscore?gameId=401468968&_xhr=1")
+
+    # Query x.page.content.gamepackage.bxscr from json_data
+    json_data = json_data['page']['content']['gamepackage']['bxscr']
+
+    print(json_data)
+    # Read JSON data search for athlt
+    # print(json_data['boxscore'])
+    # find all athletes stats in json
+    # print(json_data['boxscore']['stats']['athletes'])
+    
+    
+    #print(json_data['gamepackageJSON']['drives']['previous'][0]['plays'][0]['text'])
+
     form = TextForm()
     if request.method == 'POST':
         data = request.form['w3review']
         print(data)
-        return redirect(url_for('checkgpt3'))
+        return redirect(url_for('nbalived'))
     
-    return render_template('checkgpt3.html', form=form)
+    return render_template('nbalived.html', form=form)
 
 @app.route('/aboutme', methods=['GET', 'POST'])
 def aboutme():

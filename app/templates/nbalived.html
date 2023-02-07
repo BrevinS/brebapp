@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <style>
+        .content {
+            max-width: 800px;
+            margin: auto;
+        }
+        .feat {
+            background-color: black;
+        }
+    </style>
+    <!--Input of text box-->
+    <br><br><br><br><br>
+    <body style="background-color:rgb(125, 125, 125)">
+        <div class="content">
+            <p>ESPN LIVE STATS IN PROGRESS /_\</p>
+            <!--Link to route checkgpt3-->
+            <form action="{{ url_for('nbalived') }}" method="post">
+                {{ form.hidden_tag() }}
+                <textarea id="checkgpt3" name="w3review" rows="4" cols="50">Enter a passage you'd like see if GPT-3 created.</textarea>
+                <br>
+    
+                <p>{{ form.submit(class='button') }}</p>
+            </form>
+        </div>
+        <div>
+            <p>ESPN BOX SCORES ATTEMPT!</p>
+
+        </div>
+    </body>
+
+{% endblock %}
