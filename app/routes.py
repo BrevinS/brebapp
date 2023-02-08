@@ -28,6 +28,42 @@ import json
 def ppjson(data):
     print(json.dumps(data, indent=2, sort_keys=True))
 
+def athletes_scores_fromjson(json_file):
+    # x.page.content.gamepackage.bxscr[0].stats[2]
+    # x.page.content.gamepackage.bxscr[1].stats[1]
+    # x.page.content.gamepackage.bxscr[0].stats[0].athlts[0].stats
+    #print(json.xpath(x.page.content.gamepackage.bxscr[0].stats[0].athlts[0].stats))
+
+    # MUST QUERY 5 STARTERS FOR TEAM ONE
+
+
+    #print('Stats Of Team bxscr 0')
+    # x.page.content.gamepackage.bxscr[1].stats[0].keys
+    #print(json_file['page']['content']['gamepackage']['bxscr'][0]['stats'][0]['keys'])
+    stats_headers = ["Minutes", "FG H/M", "3PT FG H/M", "FT H/M", "OFF REB", "DEF REB", "AST", "STL", "BLK", "TO", "PMINUS", "PTS"]
+    #print(stats_headers)
+    data_t1 = []
+    data_t2 = []
+    for stats in range(0, 2):
+        for athlete in range(0, 5):
+            json_data1 = json_file['page']['content']['gamepackage']['bxscr'][0]['stats'][stats]['athlts'][athlete]['stats']
+            #print(json_data1)
+            json_data2 = json_file['page']['content']['gamepackage']['bxscr'][0]['stats'][stats]['athlts'][athlete]['athlt']['shrtNm']
+            #print(json_data2)
+            # append data_t1 with json_data2 and json_data1
+            data_t1.append([json_data2, json_data1])
+
+    #print('Stats Of Team bxscr 1')
+    for stats in range(0, 2):
+        for athlete in range(0, 5):
+            json_data1 = json_file['page']['content']['gamepackage']['bxscr'][1]['stats'][stats]['athlts'][athlete]['stats']
+            #print(json_data1)
+            json_data2 = json_file['page']['content']['gamepackage']['bxscr'][1]['stats'][stats]['athlts'][athlete]['athlt']['shrtNm']
+            #print(json_data2)
+            data_t2.append([json_data2, json_data1])
+        
+    return data_t1, data_t2, stats_headers
+
 @app.before_first_request
 def initDB(*args, **kwargs):
     db.create_all()
@@ -80,25 +116,15 @@ def login():
 def nbalived():
     json_data = espn.get_url("https://www.espn.com/nba/boxscore?gameId=401468968&_xhr=1")
 
-    # Query x.page.content.gamepackage.bxscr from json_data
-    json_data = json_data['page']['content']['gamepackage']['bxscr']
-
-    print(json_data)
-    # Read JSON data search for athlt
-    # print(json_data['boxscore'])
-    # find all athletes stats in json
-    # print(json_data['boxscore']['stats']['athletes'])
+    team1, team2, stat_headers = athletes_scores_fromjson(json_data)
+    #for i, j in team1:
+    #    print(i)
+    #    print(j)
+    #print(team1)
+    #print(team2)
     
     
-    #print(json_data['gamepackageJSON']['drives']['previous'][0]['plays'][0]['text'])
-
-    form = TextForm()
-    if request.method == 'POST':
-        data = request.form['w3review']
-        print(data)
-        return redirect(url_for('nbalived'))
-    
-    return render_template('nbalived.html', form=form)
+    return render_template('nbalived.html', team1=team1, team2=team2, stat_headers=stat_headers)
 
 @app.route('/aboutme', methods=['GET', 'POST'])
 def aboutme():
