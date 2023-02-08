@@ -111,16 +111,8 @@ def login():
 @app.route('/nbalived', methods=['GET', 'POST'])
 def nbalived():
     json_data = espn.get_url("https://www.espn.com/nba/boxscore?gameId=401468968&_xhr=1")
-
     team1, team2, stat_headers = athletes_scores_fromjson(json_data)
-
     stats = team_stats_fromjson(json_data)
-    #for i, j in team1:
-    #    print(i)
-    #    print(j)
-    #print(team1)
-    #print(team2)
-    
     
     return render_template('nbalived.html', team1=team1, team2=team2, stat_headers=stat_headers)
 
@@ -244,7 +236,7 @@ def supervised(dataframe_id):
         if (int(select) == 1): 
             return redirect(url_for('knn', dataframe_id=dataframe_id))
         elif (int(select) == 2):
-            #return redirect(url_for('hier', dataframe_id=dataframe_id))
+            return redirect(url_for('hier', dataframe_id=dataframe_id))
             pass
         else:
             pass
