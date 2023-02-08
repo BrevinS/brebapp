@@ -51,6 +51,12 @@ def athletes_scores_fromjson(json_file):
     return data_t1, data_t2, stats_headers
 
 def team_stats_fromjson(json_file):
+    # x.page.content.gamepackage.bxscr[1].tm.dspNm
+    stats = []
+    for i in range(0, 2):
+        json_data = json_file['page']['content']['gamepackage']['bxscr'][i]['tm']['dspNm']
+        stats.append(json_data)
+    print(stats)
 
     return 0
 
@@ -107,6 +113,8 @@ def nbalived():
     json_data = espn.get_url("https://www.espn.com/nba/boxscore?gameId=401468968&_xhr=1")
 
     team1, team2, stat_headers = athletes_scores_fromjson(json_data)
+
+    stats = team_stats_fromjson(json_data)
     #for i, j in team1:
     #    print(i)
     #    print(j)
