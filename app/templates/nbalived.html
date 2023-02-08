@@ -17,23 +17,71 @@
             <p>ESPN LIVE STATS IN PROGRESS /_\</p>
         </div>
         <div>
-            <p>ESPN BOX SCORES ATTEMPT!</p>
+            <table class="playertable" padding="0px">
+                <tr>
+                    <td width="16%">
+            
+                    </td>
+                    <td width="4%" style="font-size: 8px;">
+                        Minutes
+                    </td>
+                    <td width="4%" style="font-size: 8px;">
+                        FG
+                    </td>
+                    <td width="4%" style="font-size: 8px;">
+                        3PT FG
+                    </td>
+                    <td width="4%" style="font-size: 8px;">
+                        FT
+                    </td>
+                    <td width="4%" style="font-size: 8px;">
+                        OFF REB
+                    </td>
+                    <td width="4%" style="font-size: 8px;">
+                        DEF REB
+                    </td>
+                    <td width="4%" style="font-size: 8px;">
+                        REB
+                    </td>
+                    <td width="4%" style="font-size: 8px;">
+                        AST
+                    </td>
+                    <td width="4%" style="font-size: 8px;">
+                        STL
+                    </td>
+                    <td width="4%" style="font-size: 8px;">
+                        BLK
+                    </td>
+                    <td width="3%" style="font-size: 8px;">
+                        TO
+                    </td>
+                    <td width="3%" style="font-size: 8px;">
+                        PF
+                    </td>
+                    <td width="3%" style="font-size: 8px;">
+                        +/-
+                    </td>
+                    <td width="4%" style="font-size: 8px;">
+                        PTS
+                    </td>
+                </tr>
+            </table>
+            {% for player, stat in team1 %}
+                <!--
+                    {{ player }}
+                    {{ stat }}
+                -->
+                {% include '_player.html' %}
+            {% endfor %}
+            <br>
+            {% for player, stat in team2 %}
+                <!--
+                    {{ player }}
+                    {{ stat }}
+                -->
+                {% include '_player.html' %}
+            {% endfor %}
         </div>
-        {% for player, stat in team1 %}
-            <!--
-                {{ player }}
-                {{ stat }}
-            -->
-            {% include '_player.html' %}
-        {% endfor %}
-        <br>
-        {% for player, stat in team2 %}
-            <!--
-                {{ player }}
-                {{ stat }}
-            -->
-            {% include '_player.html' %}
-        {% endfor %}
 
 
     </body>

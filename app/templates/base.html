@@ -14,7 +14,7 @@
     <body>
         <div class="navbar navbar-inverse navbar-static-top">
             <a class="button navbar-brand" href="{{url_for('aboutme')}}">About Me</a>
-            <a class="button navbar-brand" href="{{url_for('nbalived')}}">CheckGPT-3</a>
+            <a class="button navbar-brand" href="{{url_for('nbalived')}}">NBA Stats</a>
             <a href="{{ url_for('homepage') }}" class="button navbar-brand">Home</a>
             <a href="{{ url_for('register') }}" class="button navbar-brand">Create Account</a>
             {% if current_user.is_anonymous %}

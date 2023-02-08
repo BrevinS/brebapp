@@ -151,6 +151,10 @@ border-radius: 50%;
     color: rgb(241, 172, 60);
 }
 
+.title_center {
+    text-align: center;
+}
+
 .playertable {
     border-collapse: collapse;
     text-align : center;

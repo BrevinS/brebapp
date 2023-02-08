@@ -29,40 +29,30 @@ def ppjson(data):
     print(json.dumps(data, indent=2, sort_keys=True))
 
 def athletes_scores_fromjson(json_file):
-    # x.page.content.gamepackage.bxscr[0].stats[2]
-    # x.page.content.gamepackage.bxscr[1].stats[1]
     # x.page.content.gamepackage.bxscr[0].stats[0].athlts[0].stats
-    #print(json.xpath(x.page.content.gamepackage.bxscr[0].stats[0].athlts[0].stats))
-
-    # MUST QUERY 5 STARTERS FOR TEAM ONE
-
-
-    #print('Stats Of Team bxscr 0')
     # x.page.content.gamepackage.bxscr[1].stats[0].keys
     #print(json_file['page']['content']['gamepackage']['bxscr'][0]['stats'][0]['keys'])
-    stats_headers = ["Minutes", "FG H/M", "3PT FG H/M", "FT H/M", "OFF REB", "DEF REB", "AST", "STL", "BLK", "TO", "PMINUS", "PTS"]
-    #print(stats_headers)
+    stats_headers = ["Minutes", "FG", "3PT FG", "FT", "OFF REB", "DEF REB", "AST", "STL", "BLK", "TO", "+/-", "PTS"]
     data_t1 = []
     data_t2 = []
     for stats in range(0, 2):
         for athlete in range(0, 5):
             json_data1 = json_file['page']['content']['gamepackage']['bxscr'][0]['stats'][stats]['athlts'][athlete]['stats']
-            #print(json_data1)
             json_data2 = json_file['page']['content']['gamepackage']['bxscr'][0]['stats'][stats]['athlts'][athlete]['athlt']['shrtNm']
-            #print(json_data2)
             # append data_t1 with json_data2 and json_data1
             data_t1.append([json_data2, json_data1])
 
-    #print('Stats Of Team bxscr 1')
     for stats in range(0, 2):
         for athlete in range(0, 5):
             json_data1 = json_file['page']['content']['gamepackage']['bxscr'][1]['stats'][stats]['athlts'][athlete]['stats']
-            #print(json_data1)
             json_data2 = json_file['page']['content']['gamepackage']['bxscr'][1]['stats'][stats]['athlts'][athlete]['athlt']['shrtNm']
-            #print(json_data2)
             data_t2.append([json_data2, json_data1])
         
     return data_t1, data_t2, stats_headers
+
+def team_stats_fromjson(json_file):
+
+    return 0
 
 @app.before_first_request
 def initDB(*args, **kwargs):
