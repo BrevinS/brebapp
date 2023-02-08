@@ -51,14 +51,20 @@ def athletes_scores_fromjson(json_file):
     return data_t1, data_t2, stats_headers
 
 def team_stats_fromjson(json_file):
+    stat_headers = ["FG", "3PT FG", "FT", "OFF REB", "DEF REB", "REB", "AST", "STL", "BLK", "TO", "PF", "PTS"]
     # x.page.content.gamepackage.bxscr[1].tm.dspNm
+    # x.page.content.gamepackage.bxscr[1].stats[2].ttls
+    names = []
     stats = []
     for i in range(0, 2):
         json_data = json_file['page']['content']['gamepackage']['bxscr'][i]['tm']['dspNm']
-        stats.append(json_data)
-    print(stats)
+        names.append(json_data)
 
-    return 0
+    for i in range(0, 2):
+        json_data = json_file['page']['content']['gamepackage']['bxscr'][i]['stats'][2]['ttls']
+        stats.append(json_data)
+    
+    return names, stats, stat_headers
 
 @app.before_first_request
 def initDB(*args, **kwargs):
@@ -233,7 +239,7 @@ def supervised(dataframe_id):
         select = form.select.data
         print('FIRST TEXT {}'.format(select))
         # Must be Typecasted 
-        if (int(select) == 1): 
+        if (int(select) == 1):
             return redirect(url_for('knn', dataframe_id=dataframe_id))
         elif (int(select) == 2):
             return redirect(url_for('hier', dataframe_id=dataframe_id))
