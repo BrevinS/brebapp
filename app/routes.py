@@ -64,7 +64,11 @@ def team_stats_fromjson(json_file):
         json_data = json_file['page']['content']['gamepackage']['bxscr'][i]['stats'][2]['ttls']
         stats.append(json_data)
     
-    return names, stats, stat_headers
+    print(names[0])
+    print(names[1])
+    print(stats[0])
+    print(stats[1])
+    return names[0], names[1], stats[0], stats[1], stat_headers
 
 @app.before_first_request
 def initDB(*args, **kwargs):
@@ -118,9 +122,10 @@ def login():
 def nbalived():
     json_data = espn.get_url("https://www.espn.com/nba/boxscore?gameId=401468968&_xhr=1")
     team1, team2, stat_headers = athletes_scores_fromjson(json_data)
-    stats = team_stats_fromjson(json_data)
+    name1, name2, team1_stats, team2_stats, team_headers = team_stats_fromjson(json_data)
     
-    return render_template('nbalived.html', team1=team1, team2=team2, stat_headers=stat_headers)
+    return render_template('nbalived.html', team1=team1, team2=team2, stat_headers=stat_headers, team1_stats=team1_stats, team2_stats=team2_stats,
+                                            team1_name=name1, team2_name=name2, team_headers=team_headers)
 
 @app.route('/aboutme', methods=['GET', 'POST'])
 def aboutme():
