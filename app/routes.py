@@ -23,7 +23,7 @@ import os
 from config import basedir
 import espn_scraper as espn
 import json
-
+from app.scrape import * 
 
 def ppjson(data):
     print(json.dumps(data, indent=2, sort_keys=True))
@@ -64,11 +64,49 @@ def team_stats_fromjson(json_file):
         json_data = json_file['page']['content']['gamepackage']['bxscr'][i]['stats'][2]['ttls']
         stats.append(json_data)
     
-    print(names[0])
-    print(names[1])
-    print(stats[0])
-    print(stats[1])
     return names[0], names[1], stats[0], stats[1], stat_headers
+
+# Find upcoming games
+def upcoming_games():
+    # Todays date is
+    today = datetime.date.today()
+    #print(today)
+    # today to ISO-8601
+    today = today.isoformat()
+    # espn.get_all_scoreboard_urls("nba", 2016)
+    
+    scoreboard_urls = get_current_scoreboard_urls("nba", 1)
+    
+    game_ids = []
+    for scoreboard_url in scoreboard_urls:
+        data = get_url(scoreboard_url)
+        # HARD CODE TO DO TODAY'S GAMES? I THINK YES
+        # x.page.content.scoreboard.evts[0].date REPRESENTED IN ISO-8601
+        for event in data['page']['content']['scoreboard']['evts']:
+            if event['id'] not in game_ids:
+                print(event['date'])
+                game_ids.append(event['id'])
+    print(game_ids)
+
+    today_game_ids = []
+    for game in game_ids:
+        data = get_url("https://www.espn.com/nba/boxscore?gameId=" + str(game) + "&_xhr=1")
+        #print(team_stats_fromjson(data))
+        #x.page.content.gamepackage.gmInfo.dtTm
+        data = data['page']['content']['gamepackage']['gmInfo']['dtTm']
+        #print(data)
+        # time_now in Zulu time
+        time_now = time_now.strftime("%Y-%m-%dT%H:%M:%SZ")
+        #print('Time now {}'.format(time_now))
+
+        if data == today:
+            print("TODAY")
+            today_game_ids.append((game, data))
+    
+    print(today_game_ids)
+
+    # Get upcoming games
+    return today_game_ids
 
 @app.before_first_request
 def initDB(*args, **kwargs):
@@ -118,12 +156,23 @@ def login():
         return redirect(url_for('homepage'))
     return render_template('login.html', title='Login Page', form=form)
 
+# A parameter in the future may be the gameId and that should be modular enough
 @app.route('/nbalived', methods=['GET', 'POST'])
 def nbalived():
     json_data = espn.get_url("https://www.espn.com/nba/boxscore?gameId=401468968&_xhr=1")
     team1, team2, stat_headers = athletes_scores_fromjson(json_data)
     name1, name2, team1_stats, team2_stats, team_headers = team_stats_fromjson(json_data)
+
+    lists = []
     
+    lists = get_all_scoreboard_urls("nba", 2022)
+    print(lists)
+
+    upcoming_games()
+
+    #upcoming = espn.get_all_scoreboard_urls("nba", 2019)
+    #print(upcoming)
+
     return render_template('nbalived.html', team1=team1, team2=team2, stat_headers=stat_headers, team1_stats=team1_stats, team2_stats=team2_stats,
                                             team1_name=name1, team2_name=name2, team_headers=team_headers)
 
@@ -655,3 +704,4 @@ def gen_frames():
 #def livefeed():
 #    time.sleep(5)
 #    return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
