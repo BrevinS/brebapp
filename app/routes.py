@@ -80,7 +80,7 @@ def upcoming_games():
             if event['id'] not in game_ids:
                 print(event['date'])
                 game_ids.append(event['id'])
-    print(game_ids)
+    # print(game_ids)
 
     today_game_ids = []
     for game in game_ids:
@@ -91,9 +91,11 @@ def upcoming_games():
         #print('Time now {}'.format(time_now))
         today_game_ids.append((game, data))
     
-    print(today_game_ids)
-    # Get upcoming games
+    # print(today_game_ids)
+    # Get upcoming games (gameID, date)
     return today_game_ids
+
+
 
 @app.before_first_request
 def initDB(*args, **kwargs):
@@ -155,13 +157,15 @@ def nbalived():
     lists = get_all_scoreboard_urls("nba", 2022)
     print(lists)
 
-    upcoming_games()
+    now_games = upcoming_games()
+   
+
 
     #upcoming = espn.get_all_scoreboard_urls("nba", 2019)
     #print(upcoming)
 
     return render_template('nbalived.html', team1=team1, team2=team2, stat_headers=stat_headers, team1_stats=team1_stats, team2_stats=team2_stats,
-                                            team1_name=name1, team2_name=name2, team_headers=team_headers)
+                                            team1_name=name1, team2_name=name2, team_headers=team_headers, now_games=now_games)
 
 @app.route('/aboutme', methods=['GET', 'POST'])
 def aboutme():
