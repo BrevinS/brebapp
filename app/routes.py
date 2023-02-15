@@ -158,14 +158,18 @@ def nbalived():
     print(lists)
 
     now_games = upcoming_games()
-   
-
+    titles = []
+    for game in now_games:
+        data = get_url("https://www.espn.com/nba/boxscore?gameId=" + str(game[0]) + "&_xhr=1")
+        # x.page.meta.title -> Bucks vs. Bulls - NBA Box Score - February 16, 2023 | ESPN
+        data = data['page']['meta']['title']
+        titles.append(data)
 
     #upcoming = espn.get_all_scoreboard_urls("nba", 2019)
     #print(upcoming)
 
     return render_template('nbalived.html', team1=team1, team2=team2, stat_headers=stat_headers, team1_stats=team1_stats, team2_stats=team2_stats,
-                                            team1_name=name1, team2_name=name2, team_headers=team_headers, now_games=now_games)
+                                            team1_name=name1, team2_name=name2, team_headers=team_headers, now_games=now_games, titles=titles)
 
 @app.route('/aboutme', methods=['GET', 'POST'])
 def aboutme():

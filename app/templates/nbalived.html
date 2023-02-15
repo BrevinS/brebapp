@@ -19,8 +19,11 @@
 
         <!--List the games for the next two days-->
         <div class="split left">
-            {% for game in now_games %}
-                
+            <h1>
+                Games
+            </h1>
+            {% for title in titles %}
+                {{ title }}
             {% endfor %}
 
         </div>
