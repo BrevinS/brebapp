@@ -86,16 +86,19 @@ def upcoming_games():
     for game in game_ids:
         data = get_url("https://www.espn.com/nba/boxscore?gameId=" + str(game) + "&_xhr=1")
         #x.page.content.gamepackage.gmInfo.dtTm
-        data = data['page']['content']['gamepackage']['gmInfo']['dtTm']
+        data1 = data['page']['content']['gamepackage']['gmInfo']['dtTm']
+        
+        data2 = data['page']['meta']['title']
+        print('THIS IS THE TITLE {}'.format(data2))
+        strip_character = " "
+        data2 = strip_character.join(data2.split(strip_character)[:3])
         # time_now in Zulu time
         #print('Time now {}'.format(time_now))
-        today_game_ids.append((game, data))
-    
-    # print(today_game_ids)
+        today_game_ids.append((game, data1, data2))
+
+    print(today_game_ids)
     # Get upcoming games (gameID, date)
     return today_game_ids
-
-
 
 @app.before_first_request
 def initDB(*args, **kwargs):
@@ -148,6 +151,8 @@ def login():
 # A parameter in the future may be the gameId and that should be modular enough
 @app.route('/nbalived', methods=['GET', 'POST'])
 def nbalived():
+    if request.method == 'POST':
+        print('It was POST')
     json_data = espn.get_url("https://www.espn.com/nba/boxscore?gameId=401468968&_xhr=1")
     team1, team2, stat_headers = athletes_scores_fromjson(json_data)
     name1, name2, team1_stats, team2_stats, team_headers = team_stats_fromjson(json_data)
@@ -158,18 +163,12 @@ def nbalived():
     print(lists)
 
     now_games = upcoming_games()
-    titles = []
-    for game in now_games:
-        data = get_url("https://www.espn.com/nba/boxscore?gameId=" + str(game[0]) + "&_xhr=1")
-        # x.page.meta.title -> Bucks vs. Bulls - NBA Box Score - February 16, 2023 | ESPN
-        data = data['page']['meta']['title']
-        titles.append(data)
 
     #upcoming = espn.get_all_scoreboard_urls("nba", 2019)
     #print(upcoming)
 
     return render_template('nbalived.html', team1=team1, team2=team2, stat_headers=stat_headers, team1_stats=team1_stats, team2_stats=team2_stats,
-                                            team1_name=name1, team2_name=name2, team_headers=team_headers, now_games=now_games, titles=titles)
+                                            team1_name=name1, team2_name=name2, team_headers=team_headers, now_games=now_games)
 
 @app.route('/aboutme', methods=['GET', 'POST'])
 def aboutme():

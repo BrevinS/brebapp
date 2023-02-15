@@ -20,11 +20,14 @@
         <!--List the games for the next two days-->
         <div class="split left">
             <h1>
-                Games
+                NBA Games In Next Two Days
             </h1>
-            {% for title in titles %}
-                {{ title }}
-            {% endfor %}
+            <div class="itemconfiguration">
+                <!--Some text can be removed but for now I want functionality-->
+                {% for game in now_games %}
+                    {% include '_game.html' %}
+                {% endfor %}
+            </div>
 
         </div>
 

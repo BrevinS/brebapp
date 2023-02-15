@@ -195,3 +195,13 @@ border-radius: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
   }
+
+  .itemconfiguration
+    {
+        height: 200px;
+        width: 100%;
+        overflow: auto;
+        float: left;
+        position: relative;
+        margin-left: -5px;
+    }
