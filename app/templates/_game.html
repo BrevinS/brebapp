@@ -3,13 +3,21 @@
         <td width="30%">
             {{ game[2] }}
         </td>
-        <td width="50">
+        <td width="10%">
+
+        </td>
+        <td width="30">
+            {{ game[1] }}
+        </td>
+        <td width="10%">
 
         </td>
         <td width="20%">
             <form action="{{ url_for('nbalived') }}" method="post">
+                <input type="hidden" name="game_id" value={{game[0]}} /> 
                 <button type="submit">Submit</button>
             </form>
         </td>
     </tr>
+    <br>
 </table>

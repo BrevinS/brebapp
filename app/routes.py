@@ -70,7 +70,7 @@ def team_stats_fromjson(json_file):
 def upcoming_games():
     time_now = datetime.datetime.now()
     # Get games within two days
-    scoreboard_urls = get_current_scoreboard_urls("nba", 2)
+    scoreboard_urls = get_current_scoreboard_urls("nba", 0)
     
     game_ids = []
     for scoreboard_url in scoreboard_urls:
@@ -78,7 +78,7 @@ def upcoming_games():
         # x.page.content.scoreboard.evts[0].date REPRESENTED IN ISO-8601
         for event in data['page']['content']['scoreboard']['evts']:
             if event['id'] not in game_ids:
-                print(event['date'])
+                #print(event['date'])
                 game_ids.append(event['id'])
     # print(game_ids)
 
@@ -152,20 +152,28 @@ def login():
 @app.route('/nbalived', methods=['GET', 'POST'])
 def nbalived():
     if request.method == 'POST':
-        print('It was POST')
-    json_data = espn.get_url("https://www.espn.com/nba/boxscore?gameId=401468968&_xhr=1")
-    team1, team2, stat_headers = athletes_scores_fromjson(json_data)
-    name1, name2, team1_stats, team2_stats, team_headers = team_stats_fromjson(json_data)
+        game_id = request.form['game_id']
+        print("This is the game id {}".format(game_id))
+        json_data = espn.get_url("https://www.espn.com/nba/boxscore?gameId=" + str(game_id) + "&_xhr=1")
+        now_games = upcoming_games()
+        
+        try:
+            team1, team2, stat_headers = athletes_scores_fromjson(json_data)
+            name1, name2, team1_stats, team2_stats, team_headers = team_stats_fromjson(json_data)
+        except KeyError:
+            flash('Game is not live yet')
+            return render_template('nbalived.html', now_games=now_games)
 
-    lists = []
-    
-    lists = get_all_scoreboard_urls("nba", 2022)
-    print(lists)
+    else:
+        json_data = espn.get_url("https://www.espn.com/nba/boxscore?gameId=401468968&_xhr=1")
+        team1, team2, stat_headers = athletes_scores_fromjson(json_data)
+        name1, name2, team1_stats, team2_stats, team_headers = team_stats_fromjson(json_data)
 
-    now_games = upcoming_games()
 
-    #upcoming = espn.get_all_scoreboard_urls("nba", 2019)
-    #print(upcoming)
+        now_games = upcoming_games()
+
+        #upcoming = espn.get_all_scoreboard_urls("nba", 2019)
+        #print(upcoming)
 
     return render_template('nbalived.html', team1=team1, team2=team2, stat_headers=stat_headers, team1_stats=team1_stats, team2_stats=team2_stats,
                                             team1_name=name1, team2_name=name2, team_headers=team_headers, now_games=now_games)
