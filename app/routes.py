@@ -96,13 +96,15 @@ def upcoming_games():
         # time_now in Zulu time
         #print('Time now {}'.format(time_now))
         today_game_ids.append((game, data1, data2))
+    #print(today_game_ids)
 
-    print(today_game_ids)
-
+    games_info_list = []
     # Find if game is currently live
     time_now = datetime.datetime.now()
     for game in today_game_ids:
         game_time = datetime.datetime.strptime(game[1], "%Y-%m-%dT%H:%MZ")
+        # -1 Value if game is live
+        time = -1
         if game_time < time_now:
             print('--> Game {} is live'.format(game[0]))
         elif game_time > time_now:
@@ -111,9 +113,12 @@ def upcoming_games():
             # Convert to PST
             time = time - datetime.timedelta(hours=8)
             print('--> Game {} not live but starts in {} hours PST'.format(game[2], time))
+        games_info_list.append((game[0], game[1], game[2], time))
     
+    print('THIS IS THE GAMES INFO LIST')
+    print(games_info_list)
     # Get upcoming games (gameID, date)
-    return today_game_ids
+    return games_info_list
 
 def get_game_live_status(json_file):
     # x.page.content.gamepackage.gmInfo.
