@@ -68,7 +68,6 @@ def team_stats_fromjson(json_file):
 
 # Find upcoming games (return games within two days?)
 def upcoming_games():
-    time_now = datetime.datetime.now()
     # Get games within two days
     scoreboard_urls = get_current_scoreboard_urls("nba", 0)
     scoreboard_urls += get_current_scoreboard_urls("nba", 1)
@@ -91,7 +90,7 @@ def upcoming_games():
         data1 = data['page']['content']['gamepackage']['gmInfo']['dtTm']
         
         data2 = data['page']['meta']['title']
-        print('THIS IS THE TITLE {}'.format(data2))
+        #print('THIS IS THE TITLE {}'.format(data2))
         strip_character = " "
         data2 = strip_character.join(data2.split(strip_character)[:3])
         # time_now in Zulu time
@@ -99,8 +98,29 @@ def upcoming_games():
         today_game_ids.append((game, data1, data2))
 
     print(today_game_ids)
+
+    # Find if game is currently live
+    time_now = datetime.datetime.now()
+    for game in today_game_ids:
+        game_time = datetime.datetime.strptime(game[1], "%Y-%m-%dT%H:%MZ")
+        if game_time < time_now:
+            print('--> Game {} is live'.format(game[0]))
+        elif game_time > time_now:
+            # Give countdown to game start
+            time = game_time - time_now
+            # Convert to PST
+            time = time - datetime.timedelta(hours=8)
+            print('--> Game {} not live but starts in {} hours PST'.format(game[2], time))
+    
     # Get upcoming games (gameID, date)
     return today_game_ids
+
+def get_game_live_status(json_file):
+    # x.page.content.gamepackage.gmInfo.
+
+    pass
+
+    # x.page.content.gamepackage.bxscr[0]
 
 @app.before_first_request
 def initDB(*args, **kwargs):
@@ -160,7 +180,7 @@ def nbalived():
 
     if request.method == 'POST':
         game_id = request.form['game_id']
-        print("This is the game id {}".format(game_id))
+        #print("This is the game id {}".format(game_id))
         json_data = espn.get_url("https://www.espn.com/nba/boxscore?gameId=" + str(game_id) + "&_xhr=1")
         now_games = upcoming_games()
         
@@ -168,9 +188,11 @@ def nbalived():
             team1, team2, stat_headers = athletes_scores_fromjson(json_data)
             name1, name2, team1_stats, team2_stats, team_headers = team_stats_fromjson(json_data)
         except KeyError:
+            print("WE HAVE A KEY ERROR FROM GAME NOT STARTED")
             flash('Game is not live yet')
         
-    return render_template('nbalived.html', team1=team1, team2=team2, stat_headers=stat_headers, team1_stats=team1_stats, team2_stats=team2_stats,
+    return render_template('nbalived.html', team1=team1, team2=team2, stat_headers=stat_headers, 
+                                            team1_stats=team1_stats, team2_stats=team2_stats,
                                             team1_name=name1, team2_name=name2, team_headers=team_headers, now_games=now_games)
 
 @app.route('/aboutme', methods=['GET', 'POST'])
