@@ -71,6 +71,8 @@ def upcoming_games():
     time_now = datetime.datetime.now()
     # Get games within two days
     scoreboard_urls = get_current_scoreboard_urls("nba", 0)
+    scoreboard_urls += get_current_scoreboard_urls("nba", 1)
+    scoreboard_urls += get_current_scoreboard_urls("nba", 2)
     
     game_ids = []
     for scoreboard_url in scoreboard_urls:
@@ -151,6 +153,11 @@ def login():
 # A parameter in the future may be the gameId and that should be modular enough
 @app.route('/nbalived', methods=['GET', 'POST'])
 def nbalived():
+    json_data = espn.get_url("https://www.espn.com/nba/boxscore?gameId=401468968&_xhr=1")
+    team1, team2, stat_headers = athletes_scores_fromjson(json_data)
+    name1, name2, team1_stats, team2_stats, team_headers = team_stats_fromjson(json_data)
+    now_games = upcoming_games()
+
     if request.method == 'POST':
         game_id = request.form['game_id']
         print("This is the game id {}".format(game_id))
@@ -162,19 +169,7 @@ def nbalived():
             name1, name2, team1_stats, team2_stats, team_headers = team_stats_fromjson(json_data)
         except KeyError:
             flash('Game is not live yet')
-            return render_template('nbalived.html', now_games=now_games)
-
-    else:
-        json_data = espn.get_url("https://www.espn.com/nba/boxscore?gameId=401468968&_xhr=1")
-        team1, team2, stat_headers = athletes_scores_fromjson(json_data)
-        name1, name2, team1_stats, team2_stats, team_headers = team_stats_fromjson(json_data)
-
-
-        now_games = upcoming_games()
-
-        #upcoming = espn.get_all_scoreboard_urls("nba", 2019)
-        #print(upcoming)
-
+        
     return render_template('nbalived.html', team1=team1, team2=team2, stat_headers=stat_headers, team1_stats=team1_stats, team2_stats=team2_stats,
                                             team1_name=name1, team2_name=name2, team_headers=team_headers, now_games=now_games)
 
