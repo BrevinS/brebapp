@@ -12,14 +12,27 @@
         <td width="20">
             {{ game[1] }}
         </td>
+        <td width="3%">
+        
+        </td>
         <td width="20%">
-            {% if game[3] != -1 %}
+            {% if game[3][0] != -1 %}
+            <!--
+                
+                <div>
+                    <iframe frameborder="0" noresize="noresize"
+                style='background: transparent; width: 100%; height:100%;' src="{{ url_for('content', timers=game[1])}}"></iframe>
+                </div>
+                    
+                -->
                 Tipoff:
-                {{ game[3] }}
+                {{ game[3][1] }}
             {% endif %}
 
-            {% if game[3] == -1 %}
-                Game Live
+            {% if game[3][0] == -1 %}
+                Game Live 
+                {{ game[3][1] }} 
+                Ago
             {% endif %}
         </td>
         <td width="25%">

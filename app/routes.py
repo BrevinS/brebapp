@@ -104,28 +104,26 @@ def upcoming_games():
     for game in today_game_ids:
         game_time = datetime.datetime.strptime(game[1], "%Y-%m-%dT%H:%MZ")
         # -1 Value if game is live
-        time = -1
-        if game_time < time_now:
-            print('--> Game {} is live'.format(game[0]))
-        elif game_time > time_now:
+        time = game_time - time_now
+        time = time - datetime.timedelta(hours=8)
+        if time < datetime.timedelta(0):
+            # Take  -1 day, 23:18:19.269731 and return 1:12:19.269731
+            time = datetime.timedelta(0) - time
+            print('--> Game {} is live and started {} ago'.format(game[2], time))
+            time = (-1, time)
+        else:
             # Give countdown to game start
             time = game_time - time_now
             # Convert to PST
             time = time - datetime.timedelta(hours=8)
             print('--> Game {} not live but starts in {} hours PST'.format(game[2], time))
+            time = (1, time)
         games_info_list.append((game[0], game[1], game[2], time))
     
     print('THIS IS THE GAMES INFO LIST')
     print(games_info_list)
     # Get upcoming games (gameID, date)
     return games_info_list
-
-def get_game_live_status(json_file):
-    # x.page.content.gamepackage.gmInfo.
-
-    pass
-
-    # x.page.content.gamepackage.bxscr[0]
 
 @app.before_first_request
 def initDB(*args, **kwargs):
@@ -135,6 +133,23 @@ def initDB(*args, **kwargs):
         for t in tags:
             db.session.add(Tag(name=t))
         db.session.commit()
+
+# https://stackoverflow.com/questions/68593071/timer-in-python-with-flask
+@app.route('/content/<timers>') 
+def content(timers):
+    def timer(timers):
+        # t will be the parameter we'll likely pass in
+        # Subtract one second from timer datetime object
+        # Make timers a datetime object
+        print(timers)
+        # Make timers PST
+        timers = datetime.datetime.strptime(str(timers), "%Y-%m-%dT%H:%MZ")
+       
+        timers = timers - datetime.timedelta(seconds=1)
+        
+        time.sleep(1)
+        yield str(timers)
+    return Response(timer(timers), mimetype='text/html')
 
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET'])
