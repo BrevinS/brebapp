@@ -2,7 +2,6 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, FloatField, IntegerField, PasswordField, SelectField, BooleanField
 from wtforms.validators import ValidationError, Length, DataRequired, Email, EqualTo
 from app.models import User, Tag
-#test
 
 class RegisterForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -49,5 +48,5 @@ class KMeanForm(FlaskForm):
 class TextForm(FlaskForm):
     text = StringField('Text', validators=[DataRequired()])
     submit = SubmitField('Submit')
-    
+
     
