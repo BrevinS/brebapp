@@ -84,12 +84,17 @@ def upcoming_games():
     # print(game_ids)
 
     today_game_ids = []
+    live_game_ids = []
     for game in game_ids:
         data = get_url("https://www.espn.com/nba/boxscore?gameId=" + str(game) + "&_xhr=1")
         #x.page.content.gamepackage.gmInfo.dtTm
         data1 = data['page']['content']['gamepackage']['gmInfo']['dtTm']
         
         data2 = data['page']['meta']['title']
+        
+        data3 = data['page']['content']['gamepackage']['gmStrp']['status']['det']
+        live_game_ids.append((game, data3))
+        print('Time remaining {} for game {}'.format(data3, data2))
         #print('THIS IS THE TITLE {}'.format(data2))
         strip_character = " "
         data2 = strip_character.join(data2.split(strip_character)[:3])
@@ -97,11 +102,18 @@ def upcoming_games():
         #print('Time now {}'.format(time_now))
         today_game_ids.append((game, data1, data2))
     #print(today_game_ids)
+    print(live_game_ids)
+
+    def helper(l, value):
+        for i in l:
+            if i[0] == value:
+                return i[1]
 
     games_info_list = []
     # Find if game is currently live
     time_now = datetime.datetime.now()
     for game in today_game_ids:
+        print('GameID {}'.format(game[0]))
         game_time = datetime.datetime.strptime(game[1], "%Y-%m-%dT%H:%MZ")
         # -1 Value if game is live
         time = game_time - time_now
@@ -110,16 +122,25 @@ def upcoming_games():
             # Take  -1 day, 23:18:19.269731 and return 1:12:19.269731
             time = datetime.timedelta(0) - time
             print('--> Game {} is live and started {} ago'.format(game[2], time))
-            time = (-1, time)
+            time = (-1, helper(live_game_ids, game[0]))
         else:
             # Give countdown to game start
             time = game_time - time_now
             # Convert to PST
             time = time - datetime.timedelta(hours=8)
+            # Round time to whole second
+            time = time - datetime.timedelta(microseconds=time.microseconds)
             print('--> Game {} not live but starts in {} hours PST'.format(game[2], time))
             time = (1, time)
         games_info_list.append((game[0], game[1], game[2], time))
     
+
+    # Add remaining time of game? x.page.content.gamepackage.gmStrp.status.det
+    # We know an NBA game consists of 4 quarters with 12 minutes in each
+    # The JSON will be returning the time remaining in the quarter 
+    # but I want a linear time remaining
+
+
     print('THIS IS THE GAMES INFO LIST')
     print(games_info_list)
     # Get upcoming games (gameID, date)
@@ -202,14 +223,13 @@ def nbalived():
         game_id = request.form['game_id']
         #print("This is the game id {}".format(game_id))
         json_data = espn.get_url("https://www.espn.com/nba/boxscore?gameId=" + str(game_id) + "&_xhr=1")
-        now_games = upcoming_games()
         
         try:
             team1, team2, stat_headers = athletes_scores_fromjson(json_data)
             name1, name2, team1_stats, team2_stats, team_headers = team_stats_fromjson(json_data)
         except KeyError:
+            flash('Live boxscores for {} vs. {} unavailable at this time.'.format(name1, name2))
             print("WE HAVE A KEY ERROR FROM GAME NOT STARTED")
-            flash('Game is not live yet')
         
     return render_template('nbalived.html', team1=team1, team2=team2, stat_headers=stat_headers, 
                                             team1_stats=team1_stats, team2_stats=team2_stats,

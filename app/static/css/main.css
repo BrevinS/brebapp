@@ -12,7 +12,15 @@ table {
     align-items: center;         
     flex-direction: row;            
     flex-wrap: nowrap;             
-  }
+}
+
+.flash-container {
+    background:#0bce07;
+	font-family: Tahoma;
+	font-size: 24px;
+    padding: 30px;
+    margin : 15px 0px 15px 0px;
+}
 
 .square {
     height: 600px;
@@ -174,44 +182,51 @@ border-radius: 50%;
     top: 0;
     overflow-x: hidden;
     padding-top: 20px;
-  }
+}
 
-  .left {
-    left: 0;
-    background-color: #ACACAC;
-    padding-top: 100px;
-    padding-left: 5px;
-  }
+.left {
+left: 0;
+background-color: #ACACAC;
+padding-top: 100px;
+padding-left: 5px;
+}
   
-  .right {
-    right: 0;
-    background-color: green;
-    padding-top: 100px;
-  }
+.right {
+right: 0;
+background-color: green;
+padding-top: 100px;
+}
 
-  .centered {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-  }
+.centered {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+text-align: center;
+}
 
-  .itemconfiguration
-    {
-        height: 300px;
-        width: 100%;
-        overflow: auto;
-        float: left;
-        position: relative;
-        margin-left: -5px;
-        outline-style: outset;
-    }
+.itemconfiguration
+{
+    height: 300px;
+    width: 100%;
+    overflow: auto;
+    float: left;
+    position: relative;
+    margin-left: -5px;
+    outline-style: outset;
+}
 
-    /*make space between left border for table*/
+/*make space between left border for table*/
 
-    .itemconfiguration table
-    {
-        width: 100%;
-        border-collapse: collapse;
-    }
+.itemconfiguration table
+{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+button:disabled,
+button[disabled]{
+    border: 1px solid #999999;
+    background-color: #cccccc;
+    color: #666666;
+}
