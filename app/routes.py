@@ -87,12 +87,13 @@ def upcoming_games():
     live_game_ids = []
     for game in game_ids:
         data = get_url("https://www.espn.com/nba/boxscore?gameId=" + str(game) + "&_xhr=1")
-        #x.page.content.gamepackage.gmInfo.dtTm
+        # x.page.content.gamepackage.gmInfo.dtTm
         data1 = data['page']['content']['gamepackage']['gmInfo']['dtTm']
         
         data2 = data['page']['meta']['title']
         
         data3 = data['page']['content']['gamepackage']['gmStrp']['status']['det']
+
         live_game_ids.append((game, data3))
         print('Time remaining {} for game {}'.format(data3, data2))
         #print('THIS IS THE TITLE {}'.format(data2))
