@@ -10,43 +10,58 @@ import pandas as pd
 BASE_URL = "https://www.espn.com"
 QUERY_STRING = "_xhr=1" # see https://gist.github.com/akeaswaran/b48b02f1c94f873c6655e7129910fc3b?permalink_comment_id=4319893#gistcomment-4319893
 
-url = "https://www.rotowire.com/basketball/nba-lineups.php"
-soup = BeautifulSoup(requests.get(url).text, "html.parser")
-
-lineups = soup.find_all(class_='is-pct-play-100')
-print(lineups)
-positions = [x.find('div').text for x in lineups]
-names = [x.find('a')['title'] for x in lineups]
-teams = sum([[x.text] * 5 for x in soup.find_all(class_='lineup__abbr')], [])
-
-df = pd.DataFrame(zip(names, teams, positions))
-print(df)
-
-
-url = "https://www.rotowire.com/betting/nba/player-props.php?format=json"
-soup = BeautifulSoup(requests.get(url).text, "html.parser")
-
-
-scripts = soup.find_all('script')
-#print(scripts)
-datasets = []
-# retrieve items in 'const settings' object from each script
-for script in scripts:
-    if 'const settings' in script.text:
-        # add everything inside hard brackets after 'data: ' to the datasets list
-        datasets.append(script.text.split('data: ')[1].split(']')[0] + ']')
-
-
 # {"gameID":"2485256","playerID":"3297","firstName":"Anthony","lastName":"Davis","name":"Anthony Davis","team":"LAL","opp":"MEM",
 # "logo":"https:\\/\\/content.rotowire.com\\/images\\/teamlogo\\/basketball\\/100LAL.png?v=3","playerLink":"\\/betting\\/nba\\/player\\/anthony-davis-odds-3297",
 # "draftkings_pts":"25.5","draftkings_ptsUnder":"100","draftkings_ptsOver":"-135","fanduel_pts":null,"fanduel_ptsUnder":null,"fanduel_ptsOver":null,"mgm_pts":null,
 # "mgm_ptsUnder":null,"mgm_ptsOver":null,"pointsbet_pts":null,"pointsbet_ptsUnder":null,"pointsbet_ptsOver":null}
+def props_today():
+    url = "https://www.rotowire.com/basketball/nba-lineups.php"
+    soup = BeautifulSoup(requests.get(url).text, "html.parser")
+
+    lineups = soup.find_all(class_='is-pct-play-100')
+    print(lineups)
+    positions = [x.find('div').text for x in lineups]
+    names = [x.find('a')['title'] for x in lineups]
+    teams = sum([[x.text] * 5 for x in soup.find_all(class_='lineup__abbr')], [])
+
+    df = pd.DataFrame(zip(names, teams, positions))
+    print(df)
+
+
+    url = "https://www.rotowire.com/betting/nba/player-props.php?format=json"
+    soup = BeautifulSoup(requests.get(url).text, "html.parser")
+
+
+    scripts = soup.find_all('script')
+    #print(scripts)
+    datasets = []
+    # retrieve items in 'const settings' object from each script
+    for script in scripts:
+        if 'const settings' in script.text:
+            # add everything inside hard brackets after 'data: ' to the datasets list
+            datasets.append(script.text.split('data: ')[1].split(']')[0] + ']')
+
+    stat_list = datasets[-1]
+    stat_whitelist = ['name', 'team', 'opp', 'draftkings_pts', 'draftkings_reb', 'draftkings_ast', 'draftkings_threes']
+    # make stat whitelist into a list of dictionaries
+    stat_list = json.loads(stat_list)
+
+    # filter out dictionary keys that are not in the whitelist
+    stat_list = [dict((k, v) for k, v in d.items() if k in stat_whitelist) for d in stat_list]
+
+    game_list = []
+
+    for game in stat_list:
+        title = game['team'] + ' vs ' + game['opp']
+
+        if title not in game_list and '@' not in title:
+            game_list.append(title)
+
+    print(game_list)
 
 
 
-
-
-
+props_today()
 
 ## General functions
 def retry_request(url, headers={}):
