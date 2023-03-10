@@ -193,7 +193,7 @@ border-radius: 50%;
   
 .right {
     right: 0;
-    background-color: green;
+    background-color: lightgray;
     padding-top: 100px;
     overflow-y: auto;
 }
