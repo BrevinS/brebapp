@@ -15,19 +15,6 @@ QUERY_STRING = "_xhr=1" # see https://gist.github.com/akeaswaran/b48b02f1c94f873
 # "draftkings_pts":"25.5","draftkings_ptsUnder":"100","draftkings_ptsOver":"-135","fanduel_pts":null,"fanduel_ptsUnder":null,"fanduel_ptsOver":null,"mgm_pts":null,
 # "mgm_ptsUnder":null,"mgm_ptsOver":null,"pointsbet_pts":null,"pointsbet_ptsUnder":null,"pointsbet_ptsOver":null}
 def props_today():
-    url = "https://www.rotowire.com/basketball/nba-lineups.php"
-    soup = BeautifulSoup(requests.get(url).text, "html.parser")
-
-    lineups = soup.find_all(class_='is-pct-play-100')
-    print(lineups)
-    positions = [x.find('div').text for x in lineups]
-    names = [x.find('a')['title'] for x in lineups]
-    teams = sum([[x.text] * 5 for x in soup.find_all(class_='lineup__abbr')], [])
-
-    df = pd.DataFrame(zip(names, teams, positions))
-    print(df)
-
-
     url = "https://www.rotowire.com/betting/nba/player-props.php?format=json"
     soup = BeautifulSoup(requests.get(url).text, "html.parser")
 
@@ -48,20 +35,20 @@ def props_today():
 
     # filter out dictionary keys that are not in the whitelist
     stat_list = [dict((k, v) for k, v in d.items() if k in stat_whitelist) for d in stat_list]
+    # sort stat_list by team name
+    stat_list = sorted(stat_list, key=lambda k: k['team'])
+
+    #print(stat_list)
 
     game_list = []
-
     for game in stat_list:
         title = game['team'] + ' vs ' + game['opp']
 
         if title not in game_list and '@' not in title:
             game_list.append(title)
 
-    print(game_list)
-
-
-
-props_today()
+    #print(game_list)
+    return game_list, stat_list
 
 ## General functions
 def retry_request(url, headers={}):

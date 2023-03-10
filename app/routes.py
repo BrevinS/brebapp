@@ -215,10 +215,20 @@ def login():
 # A parameter in the future may be the gameId and that should be modular enough
 @app.route('/nbalived', methods=['GET', 'POST'])
 def nbalived():
-    json_data = espn.get_url("https://www.espn.com/nba/boxscore?gameId=401468968&_xhr=1")
-    team1, team2, stat_headers = athletes_scores_fromjson(json_data)
-    name1, name2, team1_stats, team2_stats, team_headers = team_stats_fromjson(json_data)
-    now_games = upcoming_games()
+    #json_data = espn.get_url("https://www.espn.com/nba/boxscore?gameId=401468968&_xhr=1")
+    #team1, team2, stat_headers = athletes_scores_fromjson(json_data)
+    #name1, name2, team1_stats, team2_stats, team_headers = team_stats_fromjson(json_data)
+    if request.method == 'GET':
+        now_games = upcoming_games()
+        try:
+            game_id = now_games[0][0]
+            json_data = espn.get_url("https://www.espn.com/nba/boxscore?gameId=" + str(game_id) + "&_xhr=1")
+            team1, team2, stat_headers = athletes_scores_fromjson(json_data)
+            name1, name2, team1_stats, team2_stats, team_headers = team_stats_fromjson(json_data)
+        except ValueError:
+            print("WE HAVE A VALUE ERROR FROM GAME NOT STARTED")
+            flash('No live games at this time')
+            return render_template('nbalived.html')
 
     if request.method == 'POST':
         game_id = request.form['game_id']
