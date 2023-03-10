@@ -10,6 +10,128 @@ import pandas as pd
 BASE_URL = "https://www.espn.com"
 QUERY_STRING = "_xhr=1" # see https://gist.github.com/akeaswaran/b48b02f1c94f873c6655e7129910fc3b?permalink_comment_id=4319893#gistcomment-4319893
 
+def ppjson(data):
+    print(json.dumps(data, indent=2, sort_keys=True))
+
+def athletes_scores_fromjson(json_file):
+    # x.page.content.gamepackage.bxscr[0].stats[0].athlts[0].stats
+    # x.page.content.gamepackage.bxscr[1].stats[0].keys
+    #print(json_file['page']['content']['gamepackage']['bxscr'][0]['stats'][0]['keys'])
+    stats_headers = ["Minutes", "FG", "3PT FG", "FT", "OFF REB", "DEF REB", "AST", "STL", "BLK", "TO", "+/-", "PTS"]
+    data_t1 = []
+    data_t2 = []
+    for stats in range(0, 2):
+        for athlete in range(0, 5):
+            json_data1 = json_file['page']['content']['gamepackage']['bxscr'][0]['stats'][stats]['athlts'][athlete]['stats']
+            json_data2 = json_file['page']['content']['gamepackage']['bxscr'][0]['stats'][stats]['athlts'][athlete]['athlt']['shrtNm']
+            # append data_t1 with json_data2 and json_data1
+            data_t1.append([json_data2, json_data1])
+
+    for stats in range(0, 2):
+        for athlete in range(0, 5):
+            json_data1 = json_file['page']['content']['gamepackage']['bxscr'][1]['stats'][stats]['athlts'][athlete]['stats']
+            json_data2 = json_file['page']['content']['gamepackage']['bxscr'][1]['stats'][stats]['athlts'][athlete]['athlt']['shrtNm']
+            data_t2.append([json_data2, json_data1])
+        
+    return data_t1, data_t2, stats_headers
+
+def team_stats_fromjson(json_file):
+    stat_headers = ["FG", "3PT FG", "FT", "OFF REB", "DEF REB", "REB", "AST", "STL", "BLK", "TO", "PF", "PTS"]
+    # x.page.content.gamepackage.bxscr[1].tm.dspNm
+    # x.page.content.gamepackage.bxscr[1].stats[2].ttls
+    names = []
+    stats = []
+    for i in range(0, 2):
+        json_data = json_file['page']['content']['gamepackage']['bxscr'][i]['tm']['dspNm']
+        names.append(json_data)
+
+    for i in range(0, 2):
+        json_data = json_file['page']['content']['gamepackage']['bxscr'][i]['stats'][2]['ttls']
+        stats.append(json_data)
+    
+    return names[0], names[1], stats[0], stats[1], stat_headers
+
+# Find upcoming games (return games within two days?)
+def upcoming_games():
+    # Get games within two days
+    scoreboard_urls = get_current_scoreboard_urls("nba", 0)
+    scoreboard_urls += get_current_scoreboard_urls("nba", 1)
+    scoreboard_urls += get_current_scoreboard_urls("nba", 2)
+    
+    game_ids = []
+    for scoreboard_url in scoreboard_urls:
+        data = get_url(scoreboard_url)
+        # x.page.content.scoreboard.evts[0].date REPRESENTED IN ISO-8601
+        for event in data['page']['content']['scoreboard']['evts']:
+            if event['id'] not in game_ids:
+                #print(event['date'])
+                game_ids.append(event['id'])
+    # print(game_ids)
+
+    today_game_ids = []
+    live_game_ids = []
+    for game in game_ids:
+        data = get_url("https://www.espn.com/nba/boxscore?gameId=" + str(game) + "&_xhr=1")
+        # x.page.content.gamepackage.gmInfo.dtTm
+        data1 = data['page']['content']['gamepackage']['gmInfo']['dtTm']
+        
+        data2 = data['page']['meta']['title']
+        
+        data3 = data['page']['content']['gamepackage']['gmStrp']['status']['det']
+
+        live_game_ids.append((game, data3))
+        print('Time remaining {} for game {}'.format(data3, data2))
+        #print('THIS IS THE TITLE {}'.format(data2))
+        strip_character = " "
+        data2 = strip_character.join(data2.split(strip_character)[:3])
+        # time_now in Zulu time
+        #print('Time now {}'.format(time_now))
+        today_game_ids.append((game, data1, data2))
+    #print(today_game_ids)
+    print(live_game_ids)
+
+    def helper(l, value):
+        for i in l:
+            if i[0] == value:
+                return i[1]
+
+    games_info_list = []
+    # Find if game is currently live
+    time_now = datetime.datetime.now()
+    for game in today_game_ids:
+        print('GameID {}'.format(game[0]))
+        game_time = datetime.datetime.strptime(game[1], "%Y-%m-%dT%H:%MZ")
+        # -1 Value if game is live
+        time = game_time - time_now
+        time = time - datetime.timedelta(hours=8)
+        if time < datetime.timedelta(0):
+            # Take  -1 day, 23:18:19.269731 and return 1:12:19.269731
+            time = datetime.timedelta(0) - time
+            print('--> Game {} is live and started {} ago'.format(game[2], time))
+            time = (-1, helper(live_game_ids, game[0]))
+        else:
+            # Give countdown to game start
+            time = game_time - time_now
+            # Convert to PST
+            time = time - datetime.timedelta(hours=8)
+            # Round time to whole second
+            time = time - datetime.timedelta(microseconds=time.microseconds)
+            print('--> Game {} not live but starts in {} hours PST'.format(game[2], time))
+            time = (1, time)
+        games_info_list.append((game[0], game[1], game[2], time))
+    
+
+    # Add remaining time of game? x.page.content.gamepackage.gmStrp.status.det
+    # We know an NBA game consists of 4 quarters with 12 minutes in each
+    # The JSON will be returning the time remaining in the quarter 
+    # but I want a linear time remaining
+
+
+    print('THIS IS THE GAMES INFO LIST')
+    print(games_info_list)
+    # Get upcoming games (gameID, date)
+    return games_info_list
+
 # {"gameID":"2485256","playerID":"3297","firstName":"Anthony","lastName":"Davis","name":"Anthony Davis","team":"LAL","opp":"MEM",
 # "logo":"https:\\/\\/content.rotowire.com\\/images\\/teamlogo\\/basketball\\/100LAL.png?v=3","playerLink":"\\/betting\\/nba\\/player\\/anthony-davis-odds-3297",
 # "draftkings_pts":"25.5","draftkings_ptsUnder":"100","draftkings_ptsOver":"-135","fanduel_pts":null,"fanduel_ptsUnder":null,"fanduel_ptsOver":null,"mgm_pts":null,
