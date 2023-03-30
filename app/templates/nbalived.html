@@ -84,7 +84,6 @@
             <table class="playertable" padding="0px">
                 <tr>
                     <td>
-
                         {{ team1_name }}
                     </td>
                 </tr>
@@ -96,6 +95,8 @@
                 <!--
                     {{ player }}
                     {{ stat }}
+                    {% with team_name=team2_name %}
+                    {% endwith %}
                 -->
                 {% include '_player.html' %}
             {% endfor %}
@@ -117,7 +118,6 @@
             <table class="playertable" padding="0px">
                 <tr>
                     <td>
-
                         {{ team2_name }}
                     </td>
                 </tr>
@@ -129,6 +129,8 @@
                 <!--
                     {{ player }}
                     {{ stat }}
+                    {% with team_name=team2_name %}
+                    {% endwith %}
                 -->
                 {% include '_player.html' %}
             {% endfor %}

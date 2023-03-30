@@ -124,8 +124,34 @@ def nbalived():
                                             team1_stats=team1_stats, team2_stats=team2_stats,
                                             team1_name=name1, team2_name=name2, team_headers=team_headers, now_games=now_games)
 
+@app.route('/prop/<player>', methods=['GET', 'POST'])
+def prop(player):
+    #remove white space from player name
+    player = player.replace(" ", "")
+    print(player)
+    if request.method == 'GET':
+        game_list, stat_list = props_today()
+        # take the list of dictionaries stat_list and convert to a dataframe
+        stat_list = pd.DataFrame(stat_list)
+        # abbreviate each "name" to first name initial and last name
+        stat_list['name'] = stat_list['name'].apply(lambda x: x.split()[0][0] + "." + x.split()[-1])
+        print(stat_list)
+        # find matching player name and team name in data frame and return the row
+        
+        stat_list = stat_list[(stat_list["name"] == player)]
+
+        print(stat_list)
+
+        # look up player under the "name" column inside the stat_list
+        # if player is in stat_list, then return the player's stats
+        if player in stat_list:
+            player_stats = stat_list[stat_list['name'] == player]
+            return render_template('prop.html', player_stats=player_stats, game_list=game_list)
+    return render_template('about.html')
+
 @app.route('/aboutme', methods=['GET', 'POST'])
 def aboutme():
+    #props_today()
 
     return render_template('about.html')
 
@@ -245,7 +271,6 @@ def supervised(dataframe_id):
             return redirect(url_for('knn', dataframe_id=dataframe_id))
         elif (int(select) == 2):
             return redirect(url_for('hier', dataframe_id=dataframe_id))
-            pass
         else:
             pass
 
